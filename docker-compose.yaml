@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  frontend:
+    build: ./frontend
+    
+    ports:
+      - "3000:3000"
+    
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+      - ./frontend/public:/usr/src/app/public
+    
+    env_file:
+      - .env
+
+    restart: always
+
+  tester:
+    build: ./tester
+
+    ports:
+        - "5000:5000"
+    
+    volumes:
+        - ./tester/src:/usr/src/app/src
+        - ./tester/static/static:/usr/src/app/static/static
+        - test-images:/usr/src/app/static/test-images
+
+    env_file:
+      - .env
+
+    restart: always
+
+volumes:
+  test-images:
