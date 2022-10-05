@@ -5,8 +5,8 @@ services:
     build: ./frontend
     
     ports:
-      - "3000:3000"
-    
+      - "${PORT}:${PORT}"
+
     volumes:
       - ./frontend/src:/usr/src/app/src
       - ./frontend/public:/usr/src/app/public
@@ -20,7 +20,7 @@ services:
     build: ./tester
 
     ports:
-        - "5000:5000"
+        - "${TESTER_PORT}:${TESTER_PORT}"
     
     volumes:
         - ./tester/src:/usr/src/app/src

@@ -1,9 +1,17 @@
-import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import AppNavbar from './components/AppBar';
+import AppBody from './components/AppBody';
 
 import './App.css';
 
 function App() {
-  return <Button variant="contained">Hello World</Button>;
+  return (
+    <Container>
+      <AppNavbar />
+      <AppBody />
+    </Container>
+  );
+  // return <Button variant="contained">Hello World</Button>;
 }
 
 export default App;
