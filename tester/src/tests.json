@@ -1,7 +1,7 @@
 {
 	"appUrl": "https://github.com/vallops99",
 	"loginSteps": [],
-	"threshold": 0.3,
+	"threshold": 0.5,
 	"tests": [{
 		"name": "MyGitHubHomepage",
 		"steps": []
