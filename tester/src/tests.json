@@ -1,6 +1,30 @@
 {
-	"appUrl": "",
-	"apiUrl": "",
+	"appUrl": "https://github.com/vallops99",
 	"loginSteps": [],
-	"tests": []
+	"threshold": 0.3,
+	"tests": [{
+		"name": "MyGitHubHomepage",
+		"steps": []
+	}, {
+		"name": "CondaEnvRepo",
+		"steps": [{
+			"action": "click",
+			"args": [".repo[title=Conda-autoactivate-env]"]
+		}, {
+			"action": "waitForSelector",
+			"args": ["a[data-pjax=true]"]
+		}]
+	}, {
+		"name": "VisualRegressionTester",
+		"steps": [{
+			"action": "goto",
+			"args": ["https://github.com/vallops99", { "waitUntil": "networkidle0" }]
+		}, {
+			"action": "click",
+			"args": [".repo[title=visual_regression_tester]"]
+		}, {
+			"action": "waitForSelector",
+			"args": ["a[data-pjax=true]"]
+		}]
+	}]
 }
