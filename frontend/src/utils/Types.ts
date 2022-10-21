@@ -13,7 +13,7 @@ export type Test = {
 
 export type TestsReturnType = {
     tests: Test[];
-    areValid: boolean;
+    areInvalid: boolean;
 }
 
 export type GetNotificationsReturnType = {

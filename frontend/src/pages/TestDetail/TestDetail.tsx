@@ -12,6 +12,7 @@ import {
     ImageDetail,
     TestWrapperDiv,
     ErrorTestDetail,
+    TestDetailHeader,
     ErrorTestDetailContainer,
 } from './TestDetailStyles';
 
@@ -40,6 +41,8 @@ export function TestDetail() {
         <TestWrapperDiv>
 
             {isFetching && <Spinner/>}
+
+            <TestDetailHeader>{test.name}</TestDetailHeader>
 
             {!test.hasDiff && (
                 <ImageDetail>

@@ -38,3 +38,8 @@ export const ErrorTestDetail = styled.div`
 
     font-weight: bold;
 `;
+
+export const TestDetailHeader = styled.h2`
+    width:100%;
+    margin: 2rem;
+`;

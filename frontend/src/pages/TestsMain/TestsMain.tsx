@@ -18,7 +18,7 @@ import {
 } from './TestsMainStyles';
 
 export function TestsMain() {
-    const { data: testsObject = { tests: [], areValid: true }, isFetching } = useGetTestQuery();
+    const { data: testsObject = { tests: [], areInvalid: true }, isFetching } = useGetTestQuery();
 
     const [testsLaunched, setTestsLaunched] = useState(false);
 
@@ -46,7 +46,7 @@ export function TestsMain() {
 
     const onClickSetTests = useCallback((tests: Test[], accept : boolean) => {
         setTests({
-            tests: testsObject.tests,
+            tests,
             accept
         });
     }, [setTests]);
@@ -69,7 +69,7 @@ export function TestsMain() {
             <Divider />
             <UtilsContainer>
                 <Button onClick={onClickLaunchTests}>Launch tests</Button>
-                {!testsObject.areValid && 
+                {testsObject.areInvalid && 
                     <>
                         <Button colorType="success" onClick={() => onClickSetTests(testsObject.tests, true)}>Accept all</Button>
                         <Button colorType="error" onClick={() => onClickSetTests(testsObject.tests, false)}>Reject All</Button>

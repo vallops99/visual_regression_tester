@@ -27,11 +27,11 @@ app.post('/launch-tests', async function(request, response) {
 
 app.get('/get-test', function(request, response) {
     const tests = tester.tests.filter(t => t.done || t.pending);
-    const areValid = tests.some(test => !test.hasDiff);
+    const areInvalid = tests.some(test => test.hasDiff);
 
 	response.send(JSON.stringify({
         tests,
-        areValid
+        areInvalid
     }));
 });
 
@@ -51,6 +51,7 @@ app.get('/get-test/:name', function(request, response) {
 
 app.post('/set-tests', function(request, response) {
 	try {
+		console.log(request.body);
 		tester.saveTests(request.body);
 		response.send();
 	} catch(err) {
