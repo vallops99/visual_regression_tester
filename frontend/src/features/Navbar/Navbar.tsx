@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router";
+import { ThemeToggler } from "..";
 
 import { TestsMain, TestDetail } from "../../pages";
 import {
@@ -18,6 +19,11 @@ export function Navbar() {
                         <NavbarLink to="/">
                             VRT
                         </NavbarLink>
+                    </NavbarLinkContainer>
+                </NavbarSide>
+                <NavbarSide>
+                    <NavbarLinkContainer>
+                        <ThemeToggler />
                     </NavbarLinkContainer>
                 </NavbarSide>
             </NavbarNav>

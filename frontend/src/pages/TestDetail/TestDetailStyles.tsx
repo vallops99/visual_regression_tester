@@ -40,6 +40,15 @@ export const ErrorTestDetail = styled.div`
 `;
 
 export const TestDetailHeader = styled.h2`
-    width:100%;
+    width: 100%;
+
     margin: 2rem;
+
+    color: var(--text-color);
+`;
+
+export const ImageDetailDescription = styled.p`
+    margin: 1rem;
+
+    color: var(--text-color);
 `;

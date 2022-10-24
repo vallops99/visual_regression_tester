@@ -1,3 +1,17 @@
+:root {
+  --primary-color: #0095FF;
+  --secondary-color: #FF9500;
+
+  --default: #0095FF;
+  --default-d: #0085EF;
+  --success: #288E25;
+  --success-transparent: #288E2511;
+  --success-d: #187E15;
+  --error: #DA2313;
+  --error-transparent: #DA231311;
+  --error-d: #CA1303;
+}
+
 .App {
   text-align: center;
 }
@@ -36,8 +50,4 @@
   100% {
     transform: translateY(0px);
   }
-}
-
-.hidden {
-  display: none;
 }

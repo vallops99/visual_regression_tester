@@ -1,3 +1,5 @@
+import { DARK_THEME, LIGHT_THEME } from "./";
+
 export type Test = {
     name: string;
     imagePath: string;
@@ -26,3 +28,5 @@ export type SetTestsParam = {
 };
 
 export type ColorType = "default" | "success" | "error";
+
+export type Theme = typeof LIGHT_THEME | typeof DARK_THEME;

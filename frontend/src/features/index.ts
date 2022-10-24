@@ -5,4 +5,5 @@ export * from "./Navbar/Navbar";
 export * from "./Spinner/Spinner";
 export * from "./Divider/Divider";
 export * from "./ImgButton/ImgButton";
+export * from "./ThemeToggler/ThemeToggler";
 export * from "./TestComponent/TestComponent";

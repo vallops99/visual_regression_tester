@@ -12,7 +12,7 @@ export const TestBox = styled.div`
     position: relative;
 
     padding: 1rem;
-    border: 1px solid var(--super-light-grey);
+    border: 2px solid var(--border-color);
     border-radius: .5rem;
 
     box-shadow: 0px 2px 10px 0px rgb(0 0 0 / 30%);
@@ -45,5 +45,11 @@ export const TestButtonConfirmations = styled.div`
 
 export const ParagraphNoDiff = styled.p`
     width: 100%;
+    
     text-align: center;
+    color: var(--text-color);
+`;
+
+export const TestTitle = styled.h3`
+    color: var(--text-color);
 `;

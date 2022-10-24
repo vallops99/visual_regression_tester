@@ -5,6 +5,7 @@ import { Test } from "../../utils";
 import { Button, Spinner, Divider } from "..";
 import {
     TestBox,
+    TestTitle,
     TestImage,
     TestActions,
     ParagraphNoDiff,
@@ -31,7 +32,7 @@ export function TestComponent({ test, testsLaunched, onClickSetTests } : Props) 
             {(testsLaunched || test.pending) && <Spinner />}
 
             <div>
-                <h3>{test.name}</h3>
+                <TestTitle>{test.name}</TestTitle>
                 <TestImageContainer>
                     <TestImage
                         src={!test.hasDiff ? test.imagePath : test.diffPath}

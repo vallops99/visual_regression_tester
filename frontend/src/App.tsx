@@ -1,15 +1,20 @@
 import { BrowserRouter } from "react-router-dom";
 
 import { Navbar } from "./features";
+import { ThemeWrapper } from "./AppStyles";
+import { ThemeContextProvider } from "./utils";
 
 import "./App.css";
-import "./theme.css";
 
 function App() {
     return (
-        <BrowserRouter>
-            <Navbar />
-        </BrowserRouter>
+        <ThemeContextProvider>
+            <ThemeWrapper>
+                <BrowserRouter>
+                    <Navbar />
+                </BrowserRouter>
+            </ThemeWrapper>
+        </ThemeContextProvider>
     );
 }
 

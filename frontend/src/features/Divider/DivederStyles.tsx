@@ -8,7 +8,7 @@ export const Hr = styled.hr`
 
     border: 0;
 
-    background-color: var(--super-light-grey);
+    background-color: var(--border-color);
 
     ${({ orientation }: DividerProps) => {
         return orientation === "horizontal" &&

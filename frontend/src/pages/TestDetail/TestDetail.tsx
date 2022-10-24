@@ -13,6 +13,7 @@ import {
     TestWrapperDiv,
     ErrorTestDetail,
     TestDetailHeader,
+    ImageDetailDescription,
     ErrorTestDetailContainer,
 } from './TestDetailStyles';
 
@@ -54,9 +55,12 @@ export function TestDetail() {
             {test.hasDiff && (
                 <>
                     <ImageDetail>
-                        <p>New image</p>
+                        <ImageDetailDescription>
+                            New image
+                        </ImageDetailDescription>
                         <ImgButton
                             colorType="success"
+                            variant="outlined"
                             src={test.lastImagePath}
                             onClick={() => onClickSetTests(true)}
                         >
@@ -64,9 +68,12 @@ export function TestDetail() {
                         </ImgButton>
                     </ImageDetail>
                     <ImageDetail>
-                        <p>Starting image</p>
+                        <ImageDetailDescription>
+                            Starting image
+                        </ImageDetailDescription>
                         <ImgButton
                             colorType="error"
+                            variant="outlined"
                             src={test.imagePath}
                             onClick={() => onClickSetTests(false)}
                         >
@@ -74,8 +81,10 @@ export function TestDetail() {
                         </ImgButton>
                     </ImageDetail>
                     <ImageDetail>
-                        <p>Difference between the two</p>
-                        <ImgStyled src={test.diffPath}></ImgStyled>
+                        <ImageDetailDescription>
+                            Difference between the two
+                        </ImageDetailDescription>
+                        <ImgStyled src={test.diffPath} />
                     </ImageDetail>
                 </>
             )}

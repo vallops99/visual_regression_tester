@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 export const Tests = styled.div`
+    width: 100%;
+
     display: flex;
     flex-wrap: nowrap;
 
-    width: 100%;
-
-    margin: 1rem auto;
+    padding: 1rem 0;
 `;
 
 export const TestsContainer = styled.div`

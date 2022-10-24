@@ -15,7 +15,7 @@ export const ButtonContainer = styled.div`
     align-items: center;
 
     z-index: 2;
-    background-color: rgba(0, 0, 0, .3);
+    background-color: rgba(0, 0, 0, .1);
 `;
 
 export const ImgButtonContainer = styled.div`

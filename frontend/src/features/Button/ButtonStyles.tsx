@@ -23,9 +23,9 @@ export const ButtonStyled = styled.button`
         let outlinedStyle = "";
         if (variant === 'outlined') {
             outlinedStyle = `
-                color: var(--text-color);
+                color: var(--${colorType}-d);
                 border-width: 2px;
-                background-color: var(--${colorType}-transparent);
+                background-color: transparent;
 
                 &:hover {
                     color: white;

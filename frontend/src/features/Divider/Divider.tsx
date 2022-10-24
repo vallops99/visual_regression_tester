@@ -1,9 +1,10 @@
 import { Hr } from "./DivederStyles";
 
 export interface DividerProps {
-    orientation?: String;
+    orientation?: string;
+    classNames?: string;
 };
 
-export function Divider({ orientation }: DividerProps) {
-    return <Hr orientation={orientation} />;
+export function Divider({ orientation, classNames }: DividerProps) {
+    return <Hr orientation={orientation} classNames={classNames} />;
 }
