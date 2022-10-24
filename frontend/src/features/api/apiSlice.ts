@@ -3,9 +3,10 @@ import { GetNotificationsReturnType, TestsReturnType, SetTestsParam, Test } from
 
 export const apiSlice = createApi({
     reducerPath: "api",
-    tagTypes: ["Tests"],
+    tagTypes: ["Test"],
 
     baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
+
     endpoints: builder => ({
         launchTests: builder.mutation<Test[], void>({
             query: () => ({
@@ -14,14 +15,14 @@ export const apiSlice = createApi({
             })
         }),
 
-        getTest: builder.query<TestsReturnType, void>({
-            query: () => `/get-test`,
-            providesTags: ["Tests"],
+        getTests: builder.query<TestsReturnType, void>({
+            query: () => `/get-tests`,
+            providesTags: ["Test"],
         }),
 
-        getTestByName: builder.query<Test, String>({
+        getTest: builder.query<Test, String>({
             query: (name) => `/get-test/${name}`,
-            providesTags: ["Tests"]
+            providesTags: (result) => [{ type: "Test", id: result?.name }],
         }),
 
         setTests: builder.mutation<void | { error: String }, SetTestsParam>({
@@ -30,15 +31,14 @@ export const apiSlice = createApi({
                 method: "POST",
                 body,
             }),
-            invalidatesTags: ["Tests"],
+            invalidatesTags: ["Test"]
         }),
 
         getNotifications: builder.mutation<GetNotificationsReturnType, void>({
             query: () => "/get-notifications",
-            invalidatesTags: (result) => {
-                if (result?.areTestsDone) {
-                    return ["Tests"];
-                }
+            invalidatesTags: (result, error, body) => {
+                if (result?.testsToReload.length) return ["Test"];
+
                 return [];
             }
         })
@@ -48,7 +48,7 @@ export const apiSlice = createApi({
 export const {
     useLaunchTestsMutation,
     useGetTestQuery,
-    useGetTestByNameQuery,
+    useGetTestsQuery,
     useSetTestsMutation,
     useGetNotificationsMutation
 } = apiSlice

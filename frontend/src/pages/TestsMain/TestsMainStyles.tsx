@@ -16,6 +16,7 @@ export const TestsContainer = styled.div`
     flex-wrap: wrap;
 
     gap: 1rem;
+    margin: 0 1rem;
 
     width: 100%;
     height: 100%;
@@ -33,4 +34,8 @@ export const UtilsContainer = styled.div`
     width: fit-content;
     height: fit-content;
     min-width: 185px;
+
+    :first-child {
+        margin-top: 0;
+    }
 `;

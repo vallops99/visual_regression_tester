@@ -20,6 +20,7 @@ export type TestsReturnType = {
 
 export type GetNotificationsReturnType = {
     areTestsDone: boolean;
+    testsToReload: string[];
 };
 
 export type SetTestsParam = {

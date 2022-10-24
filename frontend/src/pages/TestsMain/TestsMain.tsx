@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react";
 
 import {
+    Button,
     Spinner,
     Divider,
     TestComponent,
-    useGetTestQuery,
+    useGetTestsQuery,
     useSetTestsMutation,
     useLaunchTestsMutation,
     useGetNotificationsMutation,
-    Button
 } from "../../features";
 import { Test } from "../../utils";
 import {
@@ -18,9 +18,9 @@ import {
 } from './TestsMainStyles';
 
 export function TestsMain() {
-    const { data: testsObject = { tests: [], areInvalid: true }, isFetching } = useGetTestQuery();
+    const { data: testsObject = { tests: [], areInvalid: true }, isFetching } = useGetTestsQuery();
 
-    const [testsLaunched, setTestsLaunched] = useState(false);
+    const [waitForNotification, setWaitForNotification] = useState(false);
 
     const [setTests] = useSetTestsMutation();
     const [launchTests] = useLaunchTestsMutation();
@@ -28,21 +28,20 @@ export function TestsMain() {
 
     const checkNotifications = useCallback((intervalId: NodeJS.Timer) => {
         getNotifications().unwrap().then(response => {
-            if (response.areTestsDone) {
-                setTestsLaunched(false);
-                clearInterval(intervalId);
-            }
+            if (response.testsToReload.length) setWaitForNotification(false);
+
+            if (response.areTestsDone) clearInterval(intervalId);
         });
     }, [getNotifications]);
 
     const onClickLaunchTests = useCallback(() => {
-        setTestsLaunched(true);
+        setWaitForNotification(true);
 
         launchTests().then(() => {
             const intervalFunction = () : void => checkNotifications(intervalId);
             const intervalId = setInterval(intervalFunction, 1000);
         });
-    }, [checkNotifications, launchTests, setTestsLaunched]);
+    }, [checkNotifications, launchTests, setWaitForNotification]);
 
     const onClickSetTests = useCallback((tests: Test[], accept : boolean) => {
         setTests({
@@ -53,18 +52,16 @@ export function TestsMain() {
 
     return (
         <Tests>
-            {isFetching && <Spinner/>}
+            {isFetching && <Spinner />}
             <TestsContainer>
-                {testsObject.tests.map((test: Test) => {
-                    return (
-                        <TestComponent
-                            test={test}
-                            key={test.name}
-                            onClickSetTests={onClickSetTests}
-                            testsLaunched={testsLaunched}
-                        />
-                )
-                })}
+                {testsObject.tests.map(test => (
+                    <TestComponent
+                        test={test}
+                        key={test.name}
+                        onClickSetTests={onClickSetTests}
+                        waitForNotification={waitForNotification}
+                    />
+                ))}
             </TestsContainer>
             <Divider />
             <UtilsContainer>

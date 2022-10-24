@@ -15,34 +15,34 @@ import {
 
 interface Props {
     test: Test;
-    testsLaunched: boolean;
+    waitForNotification: boolean;
     onClickSetTests: (tests : Test[], accept: boolean) => void;
 }
 
-export function TestComponent({ test, testsLaunched, onClickSetTests } : Props) {
+export function TestComponent({ test, onClickSetTests, waitForNotification } : Props) {
     const navigate = useNavigate();
 
     const onClickShow = useCallback(() => {
-        navigate(`/${test.name}`);
-    }, [navigate, test.name]);
+        navigate(`/${test?.name}`);
+    }, [navigate, test?.name]);
 
     return (
         <TestBox>
 
-            {(testsLaunched || test.pending) && <Spinner />}
+            {(waitForNotification || test.pending) && <Spinner />}
 
             <div>
-                <TestTitle>{test.name}</TestTitle>
+                <TestTitle>{test?.name}</TestTitle>
                 <TestImageContainer>
                     <TestImage
-                        src={!test.hasDiff ? test.imagePath : test.diffPath}
-                        alt={test.name}
+                        src={!test?.hasDiff ? test?.imagePath : test.diffPath}
+                        alt={test?.name}
                     />
                 </TestImageContainer>
             </div>
             <Divider orientation="horizontal" />
             <TestActions>
-                {!test.hasDiff ?
+                {!test?.hasDiff ?
                     <ParagraphNoDiff>Test has found no differences</ParagraphNoDiff> :
                     <>
                         <TestButtonConfirmations>

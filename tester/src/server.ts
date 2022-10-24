@@ -25,7 +25,7 @@ app.post('/launch-tests', async function(request, response) {
 	}));
 });
 
-app.get('/get-test', function(request, response) {
+app.get('/get-tests', function(request, response) {
     const tests = tester.tests.filter(t => t.done || t.pending);
     const areInvalid = tests.some(test => test.hasDiff);
 
@@ -51,7 +51,6 @@ app.get('/get-test/:name', function(request, response) {
 
 app.post('/set-tests', function(request, response) {
 	try {
-		console.log(request.body);
 		tester.saveTests(request.body);
 		response.send();
 	} catch(err) {
@@ -62,15 +61,18 @@ app.post('/set-tests', function(request, response) {
 });
 
 app.get('/get-notifications', function(request, response) {
-	// const tests = tester.tests.filter(test => {
-	// 	if (test.notified) return false;
+	const tests = tester.tests.reduce((memo: string[], test) => {
+		if (test.notified || !test.done) return memo;
 
-	// 	test.notified = test.done;
-	// 	return test.done;
-	// });
+		test.notified = true;
+		memo.push(test.name);
+
+		return memo;
+	}, []);
 
 	response.send(JSON.stringify({
-		areTestsDone: tester.areTestsDone
+		areTestsDone: tester.areTestsDone,
+		testsToReload: tests
 	}));
 });
 

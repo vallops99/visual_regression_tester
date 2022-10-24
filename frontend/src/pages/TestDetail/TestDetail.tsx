@@ -2,10 +2,10 @@ import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-    ImgButton,
-    useSetTestsMutation,
-    useGetTestByNameQuery,
     Spinner,
+    ImgButton,
+    useGetTestQuery,
+    useSetTestsMutation,
 } from "../../features";
 import {
     ImgStyled,
@@ -20,7 +20,7 @@ import {
 export function TestDetail() {
     let params = useParams();
 
-    const { data: test, isFetching } = useGetTestByNameQuery(params.testName || '');
+    const { data: test, isFetching } = useGetTestQuery(params.testName || '');
     const [setTests] = useSetTestsMutation();
 
     const onClickSetTests = useCallback((accept : boolean) => {
@@ -47,7 +47,9 @@ export function TestDetail() {
 
             {!test.hasDiff && (
                 <ImageDetail>
-                    <p>Saved image</p>
+                    <ImageDetailDescription>
+                        Saved image
+                    </ImageDetailDescription>
                     <ImgStyled src={test.imagePath}></ImgStyled>
                 </ImageDetail>
             )}
