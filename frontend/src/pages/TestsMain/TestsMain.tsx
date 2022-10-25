@@ -52,7 +52,7 @@ export function TestsMain() {
 
     return (
         <Tests>
-            {isFetching && <Spinner />}
+            {isFetching && <Spinner variant="viewport" />}
             <TestsContainer>
                 {testsObject.tests.map(test => (
                     <TestComponent

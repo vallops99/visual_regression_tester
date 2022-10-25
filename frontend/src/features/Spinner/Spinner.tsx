@@ -1,8 +1,12 @@
 import { LdsRing, LdsRingInner, SpinnerContainer } from './SpinnerStyles';
 
-export function Spinner() {
+interface Props {
+    variant?: "viewport" | "default";
+}
+
+export function Spinner({ variant = "default" }: Props) {
     return (
-        <SpinnerContainer >
+        <SpinnerContainer variant={variant}>
             <LdsRing>
                 <LdsRingInner></LdsRingInner>
                 <LdsRingInner></LdsRingInner>

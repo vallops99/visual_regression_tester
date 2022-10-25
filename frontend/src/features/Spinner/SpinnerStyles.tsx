@@ -15,6 +15,20 @@ export const SpinnerContainer = styled.div`
     margin: 0;
     background-color: rgba(0, 0, 0, .5);
     z-index: 10;
+
+    ${({ variant }: { variant: "viewport" | "default"}) => {
+        if (variant === "viewport") {
+            return `
+                position: fixed;
+                left: 0;
+                top: 0;
+
+                width: 100vw;
+                height: 100vh;
+            `;
+        }
+        return ``;
+    }}
 `;
 
 export const LdsRing = styled.div`
