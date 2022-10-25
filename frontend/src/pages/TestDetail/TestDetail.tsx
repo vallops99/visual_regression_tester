@@ -20,7 +20,7 @@ import {
 export function TestDetail() {
     let params = useParams();
 
-    const { data: test, isFetching } = useGetTestQuery(params.testName || '');
+    const { data: test, isFetching, isError } = useGetTestQuery(params.testName || '');
     const [setTests] = useSetTestsMutation();
 
     const onClickSetTests = useCallback((accept : boolean) => {
@@ -30,7 +30,7 @@ export function TestDetail() {
         });
     }, [setTests, test]);
 
-    if (!test) {
+    if (isError) {
         return (
             <ErrorTestDetailContainer>
                 <ErrorTestDetail>Something wrong happened, can't load the test requested</ErrorTestDetail>
@@ -43,18 +43,18 @@ export function TestDetail() {
 
             {isFetching && <Spinner/>}
 
-            <TestDetailHeader>{test.name}</TestDetailHeader>
+            <TestDetailHeader>{test?.name}</TestDetailHeader>
 
-            {!test.hasDiff && (
+            {!test?.hasDiff && (
                 <ImageDetail>
                     <ImageDetailDescription>
                         Saved image
                     </ImageDetailDescription>
-                    <ImgStyled src={test.imagePath}></ImgStyled>
+                    <ImgStyled src={test?.imagePath}></ImgStyled>
                 </ImageDetail>
             )}
 
-            {test.hasDiff && (
+            {test?.hasDiff && (
                 <>
                     <ImageDetail>
                         <ImageDetailDescription>
@@ -64,6 +64,7 @@ export function TestDetail() {
                             colorType="success"
                             variant="outlined"
                             src={test.lastImagePath}
+                            alt={`${test.name} new image`}
                             onClick={() => onClickSetTests(true)}
                         >
                                 Accept changes
@@ -77,6 +78,7 @@ export function TestDetail() {
                             colorType="error"
                             variant="outlined"
                             src={test.imagePath}
+                            alt={`${test.name} starting image`}
                             onClick={() => onClickSetTests(false)}
                         >
                             Reject changes
@@ -86,7 +88,7 @@ export function TestDetail() {
                         <ImageDetailDescription>
                             Difference between the two
                         </ImageDetailDescription>
-                        <ImgStyled src={test.diffPath} />
+                        <ImgStyled src={test.diffPath} alt={`${test.name} difference image`}/>
                     </ImageDetail>
                 </>
             )}
