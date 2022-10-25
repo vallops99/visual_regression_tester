@@ -11,9 +11,9 @@ const tester = new Tester();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('./static'));
+app.use(express.static("./static"));
 
-app.post('/launch-tests', async function(request, response) {
+app.post("/launch-tests", function(request, response) {
 	if (!tester.areTestsDone) {
 		tester.testsRestarted = true;
 	}
@@ -21,11 +21,11 @@ app.post('/launch-tests', async function(request, response) {
 	tester.launchTests();
 
 	response.send(JSON.stringify({
-		message: 'Tests started'
+		message: "Tests started"
 	}));
 });
 
-app.get('/get-tests', function(request, response) {
+app.get("/get-tests", function(request, response) {
     const tests = tester.tests.filter(t => t.done || t.pending);
     const areInvalid = tests.some(test => test.hasDiff);
 
@@ -35,7 +35,7 @@ app.get('/get-tests', function(request, response) {
     }));
 });
 
-app.get('/get-test/:name', function(request, response) {
+app.get("/get-test/:name", function(request, response) {
 	const test = tester.tests.find(test => {
 		return request.params.name && test.name === request.params.name;
 	});
@@ -49,7 +49,7 @@ app.get('/get-test/:name', function(request, response) {
 	}));
 });
 
-app.post('/set-tests', function(request, response) {
+app.post("/set-tests", function(request, response) {
 	try {
 		tester.saveTests(request.body);
 		response.send();
@@ -60,7 +60,7 @@ app.post('/set-tests', function(request, response) {
 	}
 });
 
-app.get('/get-notifications', function(request, response) {
+app.get("/get-notifications", function(request, response) {
 	const tests = tester.tests.reduce((memo: string[], test) => {
 		if (test.notified || !test.done) return memo;
 
