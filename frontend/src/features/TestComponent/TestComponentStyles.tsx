@@ -8,6 +8,7 @@ export const TestBox = styled.div`
     flex-wrap: nowrap;
 
     height: 400px;
+    width: 380px;
 
     position: relative;
 
@@ -18,8 +19,12 @@ export const TestBox = styled.div`
     box-shadow: 0px 2px 10px 0px rgb(0 0 0 / 30%);
 `;
 
+export const TestBodyContainer = styled.div`
+    margin-bottom: .5rem;
+`;
+
 export const TestImageContainer = styled.div`
-    width: 380px;
+    width: 100%;
     height: 210px;
 `;
 
@@ -41,13 +46,6 @@ export const TestActions = styled.div`
 export const TestButtonConfirmations = styled.div`
     display: flex;
     flex-wrap: nowrap;
-`;
-
-export const ParagraphNoDiff = styled.p`
-    width: 100%;
-    
-    text-align: center;
-    color: var(--text-color);
 `;
 
 export const TestTitle = styled.h3`

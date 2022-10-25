@@ -2,13 +2,13 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Test } from "../../utils";
-import { Button, Spinner, Divider } from "..";
+import { Button, Spinner, Divider, Paragraph } from "..";
 import {
     TestBox,
     TestTitle,
     TestImage,
     TestActions,
-    ParagraphNoDiff,
+    TestBodyContainer,
     TestImageContainer,
     TestButtonConfirmations,
 } from "./TestComponentStyles";
@@ -31,36 +31,38 @@ export function TestComponent({ test, onClickSetTests, waitForNotification } : P
 
             {(waitForNotification || test.pending) && <Spinner />}
 
-            <div>
+            <TestBodyContainer>
                 <TestTitle>{test?.name}</TestTitle>
                 <TestImageContainer>
                     <TestImage
-                        src={!test?.hasDiff ? test?.imagePath : test.diffPath}
-                        alt={test?.name}
+                        src={test?.hasDiff ? test.diffPath : test?.imagePath}
+                        alt={`${test?.name} difference image`}
                     />
                 </TestImageContainer>
-            </div>
+            </TestBodyContainer>
             <Divider orientation="horizontal" />
             <TestActions>
-                {!test?.hasDiff ?
-                    <ParagraphNoDiff>Test has found no differences</ParagraphNoDiff> :
+                {test.error ? <Paragraph variant="error">{test.error}</Paragraph> :
                     <>
-                        <TestButtonConfirmations>
-                            <Button
-                                colorType="success"
-                                variant="outlined"
-                                onClick={() => onClickSetTests([test], true)}
-                            >
-                                Accept changes
-                            </Button>
-                            <Button
-                                colorType="error"
-                                variant="outlined"
-                                onClick={() => onClickSetTests([test], false)}
-                            >
-                                Reject changes
-                            </Button>
-                        </TestButtonConfirmations>
+                        {!test?.hasDiff && <Paragraph>Test has found no differences</Paragraph>}
+                        {test?.hasDiff && <>
+                            <TestButtonConfirmations>
+                                <Button
+                                    colorType="success"
+                                    variant="outlined"
+                                    onClick={() => onClickSetTests([test], true)}
+                                >
+                                    Accept changes
+                                </Button>
+                                <Button
+                                    colorType="error"
+                                    variant="outlined"
+                                    onClick={() => onClickSetTests([test], false)}
+                                >
+                                    Reject changes
+                                </Button>
+                            </TestButtonConfirmations>
+                        </>}
                     </>
                 }
                 <Button
