@@ -3,7 +3,7 @@ FROM node:18
 WORKDIR /usr/src/app
 
 RUN apt-get update \
- && apt-get install -y chromium \
+    && apt-get install -y chromium \
     fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
     --no-install-recommends
 

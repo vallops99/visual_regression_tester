@@ -24,7 +24,7 @@
 			"args": [".repo[title=visual_regression_tester]"]
 		}, {
 			"action": "waitForSelector",
-			"args": ["a[data-pjax=true]"]
+			"args": ["a[data-pjax=true] asd"]
 		}]
 	}]
 }

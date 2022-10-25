@@ -15,20 +15,38 @@ services:
 
         restart: always
 
-    tester:
-        build: ./tester
+    backend:
+        build: ./backend
 
         ports:
-            - "${TESTER_PORT}:${TESTER_PORT}"
+            - "${BACKEND_PORT}:${BACKEND_PORT}"
 
         volumes:
-            - ./tester/src:/usr/src/app/src
+            - ./backend/src:/usr/src/app/src
             - test-images:/usr/src/app/static/test-images
 
         env_file:
             - .env
 
         restart: always
+    
+    database:
+        build: ./database
+
+        expose:
+            - "5432"
+
+        volumes:
+            - app-pgdata:/var/lib/postgresql/data
+
+        env_file:
+            - .env
+
+        tty: true
+        stdin_open: true
+
+        restart: always
 
 volumes:
+    app-pgdata:
     test-images:

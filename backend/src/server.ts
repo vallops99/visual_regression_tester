@@ -25,6 +25,12 @@ app.post("/launch-tests", function(request, response) {
 	}));
 });
 
+app.post("/launch-test/:name", function(request, response) {
+	response.send(JSON.stringify({
+		message: "Test started"
+	}));
+});
+
 app.get("/get-tests", function(request, response) {
     const tests = tester.tests.filter(t => t.done || t.pending);
     const areInvalid = tests.some(test => test.hasDiff);

@@ -94,6 +94,7 @@ export class Test {
         if (!stepsSuccess) {
             this.done = true;
             this.pending = false;
+            this.hasDiff = false;
 
             return;
         }
