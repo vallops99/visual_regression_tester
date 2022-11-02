@@ -67,7 +67,7 @@ export function TestDetail() {
                             alt={`${test.name} new image`}
                             onClick={() => onClickSetTests(true)}
                         >
-                                Accept changes
+                                Accept NEW image
                         </ImgButton>
                     </ImageDetail>
                     <ImageDetail>
@@ -81,7 +81,7 @@ export function TestDetail() {
                             alt={`${test.name} starting image`}
                             onClick={() => onClickSetTests(false)}
                         >
-                            Reject changes
+                            Accept OLD image
                         </ImgButton>
                     </ImageDetail>
                     <ImageDetail>

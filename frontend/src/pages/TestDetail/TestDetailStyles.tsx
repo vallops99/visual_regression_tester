@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Img } from "../../features";
+import { Img, ImgButton } from "../../features";
 
 export const TestWrapperDiv = styled.div`
     width: 100%;
