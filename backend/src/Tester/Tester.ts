@@ -3,22 +3,34 @@ import { PNG } from "pngjs";
 import puppeteer from "puppeteer";
 import pixelmatch from "pixelmatch";
 
-import { Test } from "src/Tester";
-import { Step } from "src/utils";
-import jsonTest from "src/tests.json";
+import { IfilteringOptions, Test } from "src/utils";
+import { execTest, prepareTest } from "src/Tester";
+import {
+    getTesterQuery,
+    getTestsQuery,
+    getTestQuery,
+    updateTestsQuery
+} from "src/Queries";
 
 export class Tester {
+    id!: number;
+
+    loginTest?: Test;
+
+    threshold!: number;
+
+    error?: string;
+    appUrl!: string;
+    imagesFolder!: string;
+
+    currentPage!: puppeteer.Page;
+    
+
     isLoggedIn = false;
     areTestsDone = true;
     testsRestarted = false;
 
-    currentPage!: puppeteer.Page;
-
-    testsMap: { [key: string]: Test } = {};
-
-    readonly imagesFolder = 'test-images';
     readonly basePath = '/usr/src/app/static';
-    readonly threshold: number = jsonTest.threshold;
     readonly browserOpts = {
         width: 1920,
         height: 1080,
@@ -26,69 +38,78 @@ export class Tester {
     };
 
     constructor() {
+        getTesterQuery().then(tester => {
+            if (!tester) return;
 
-        jsonTest.tests.forEach(test => {
-            if (this.testsMap[test.name]) {
-                console.log('Two tests with the same name can not exist');
-                return;
-            }
+            this.id = tester.id;
+            this.appUrl = tester.appUrl;
+            this.threshold = tester.threshold;
+            this.imagesFolder = tester.imagesFolder;
 
-            this.testsMap[test.name] = new Test({
-                ...test,
-                testerInstance: this,
-                basePath: this.basePath,
-                imagesFolder: this.imagesFolder,
-            });
+            fs.mkdir(`${this.basePath}/${this.imagesFolder}`, () => {});
         });
     }
 
-    get tests() {
-        return Object.values(this.testsMap);
+    async getTests(filteringOptions?: IfilteringOptions) {
+        return await getTestsQuery(this.id, filteringOptions);
     }
 
-    saveTests({ tests, accept }: { tests: Test[], accept: boolean }) {
-        tests.forEach(test => {
-            const testInstance = this.testsMap[test.name];
-            const fullDiffPath = `${this.basePath}/${testInstance.diffPath}`;
-            const fullImagePath = `${this.basePath}/${testInstance.imagePath}`;
-            const fullLastImagePath = `${this.basePath}/${testInstance.lastImagePath}`;
+    async getTest(testName: string) {
+        return await getTestQuery(this.id, testName);
+    }
+
+    async updateTests(tests: Test[]) {
+        return await updateTestsQuery(tests);
+    }
+
+    async saveTests({ tests, accept }: { tests: Test[], accept: boolean }) {
+        const fileErrorHandler = (error: NodeJS.ErrnoException | null) => {
+            console.error("Cannot make action over file, error: " + error);
+        };
+        for (const test of tests) {
+            const fullDiffPath = `${this.basePath}/${test.diffPath}`;
+            const fullImagePath = `${this.basePath}/${test.imagePath}`;
+            const fullLastImagePath = `${this.basePath}/${test.lastImagePath}`;
 
             if (!this.doesPathsExist([fullDiffPath, fullImagePath, fullLastImagePath])) {
-                testInstance.error = 'One of the three images does not exist, try launching the tests again';
-                return;
+                test.error = 'One of the three images does not exist, try launching the tests again';
+                continue;
             }
 
-            fs.unlink(fullDiffPath, (err) => {
-                if (err) console.log('cannot delete fullDiffPath: ' + fullDiffPath);
-            });
-            testInstance.hasDiff = false;
-            testInstance.diffPath = undefined;
-            testInstance.lastImagePath = undefined;
+            fs.unlink(fullDiffPath, fileErrorHandler);
+
+            test.hasDiff = false;
+            test.diffPath = null;
+            test.lastImagePath = null;
 
             if (!accept) {
-                fs.unlink(fullLastImagePath, (err) => {
-                    if (err) console.log('cannot delete fullLastImagePath: ' + fullLastImagePath);
-                });
-                return;
+                fs.unlink(fullLastImagePath, fileErrorHandler);
+            } else {
+                const currentHash = Date.now();
+                test.imagePath = `${this.imagesFolder}/${test.name}/${test.name}_${currentHash}.png`;
+
+                fs.unlink(fullImagePath, fileErrorHandler);
+
+                fs.rename(fullLastImagePath, `${this.basePath}/${test.imagePath}`, fileErrorHandler);
             }
 
-            const currentHash = Date.now();
-            testInstance.imagePath = `${this.imagesFolder}/${testInstance.name}/${testInstance.name}_${currentHash}.png`;
+            console.log(test);
+        }
 
-            fs.unlink(fullImagePath, (err) => {
-                if (err) console.log('cannot delete fullImagePath: ' + fullImagePath);
-            });
-
-            fs.renameSync(fullLastImagePath, `${this.basePath}/${testInstance.imagePath}`);
-        });
+        await updateTestsQuery(tests);
     }
 
     async launchTests() {
         console.log('Regression tests started');
 
+        this.isLoggedIn = false;
         this.areTestsDone = false;
 
-        Object.values(this.testsMap).forEach(test => test.prepareForTest());
+        const tests = await this.getTests();
+
+        tests.forEach(test => prepareTest(test, this));
+
+        await updateTestsQuery(tests);
 
         console.log('launching browser...');
         const browser = await puppeteer.launch({
@@ -99,29 +120,45 @@ export class Tester {
             ]
         });
 
-        this.currentPage = await browser.newPage();
+        try {
+            this.currentPage = await browser.newPage();
 
-        console.log('Loading page...');
-        await this.currentPage.goto(
-            jsonTest.appUrl,
-            {
-                timeout: 60000,
-                waitUntil: 'networkidle0'
-            }
-        );
+            console.log('Loading page...');
+            await this.currentPage.goto(
+                this.appUrl,
+                {
+                    timeout: 60000,
+                    waitUntil: 'networkidle0'
+                }
+            );
+        } catch(error: any) {
+            console.error(error);
+            this.error = error;
+        }
 
         let testNumber = 0;
-        for (const test of Object.values(this.testsMap)) {
+        for (const test of tests) {
+            // If tests has been restarted break this batch
             if (this.testsRestarted) break;
+            // Propagate tester error to all tests
+            if (this.error) {
+                test.done = true;
+                test.pending = false;
+                test.hasDiff = false;
+                test.error = this.error;
+                continue;
+            }
 
             testNumber += 1.
 
             console.log(`Test n.${testNumber}`);
             console.log(`Screenshot will be uploaded at ${this.basePath}/${this.imagesFolder} under name ${test.name}.png`);
 
-            await test.launchTest();
+            await execTest(test, this);
 
             console.log('Page screenshot done, moving on...');
+
+            updateTestsQuery([test]);
         }
 
         await browser.close();
@@ -132,34 +169,12 @@ export class Tester {
         console.log('done');
     }
 
-    async runStep(step: Step, test: Test) {
-        let stepSuccess = true;
+    async login(): Promise<Test | undefined> {
+        if (!this.loginTest) return undefined;
+        
+        await execTest(this.loginTest, this);
 
-        console.log(`Making step ${step.action} with args ${JSON.stringify(step.args)}`);
-        try {
-            // Next line has been ignored because there were no way of letting TS accept it.
-            // @ts-ignore
-            await this.currentPage[step.action](...step.args);
-        } catch(err) {
-            console.log(err);
-            test.error =
-                `Error while making step ${step.action} with args ${JSON.stringify(step.args)}`;
-
-            stepSuccess = false;
-        }
-
-        return stepSuccess;
-    }
-
-    async login(test: Test) {
-        let stepsSuccess = true;
-
-        for (const step of jsonTest.loginSteps) {
-            stepsSuccess = await this.runStep(step, test);
-            if (!stepsSuccess) break;
-        }
-
-        return stepsSuccess;
+        return this.loginTest;
     }
 
     async compareScreenshots(firstImagePath: string, secondImagePath: string): Promise<{numPixelDiff: number, imgBuffer: Buffer}> {
@@ -169,10 +184,8 @@ export class Tester {
         // Otherwise we should rely on returning a Promise and relying on its resolve function,
         // but that will break TS' linter by don't having a proper return value;
         let flagPromiseResolver: (value: unknown) => void;
-        let flagPromiseRejecter: (reason: unknown) => void;
-        const flagPromise = new Promise((resolve, reject) => {
+        const flagPromise = new Promise((resolve) => {
             flagPromiseResolver = resolve;
-            flagPromiseRejecter = reject;
         });
 
         let parsedImages = 0;

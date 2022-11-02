@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+    prisma_studio:
+        build: ./backend/prisma
+
+        volumes:
+            - ./backend/prisma:/usr/src/app/prisma
+
+        ports:
+            - "5555:5555"
+
+        env_file:
+            - .env
+
+        restart: always

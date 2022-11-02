@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { Img } from "..";
+import { ButtonStyled } from "../Button/ButtonStyles";
 
 export const ButtonContainer = styled.div`
     position: absolute;
@@ -16,6 +17,10 @@ export const ButtonContainer = styled.div`
 
     z-index: 2;
     background-color: rgba(0, 0, 0, .1);
+
+    ${ButtonStyled} {
+        width: 200px;
+    }
 `;
 
 export const ImgButtonContainer = styled.div`

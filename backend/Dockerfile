@@ -10,9 +10,8 @@ RUN apt-get update \
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 
+COPY prisma .
 COPY package*.json .
 COPY tsconfig.json .
-
-RUN npm install
 
 CMD [ "npm", "run", "start" ]

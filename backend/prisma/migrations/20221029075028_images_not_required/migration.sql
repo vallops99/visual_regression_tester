@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Test" ALTER COLUMN "imagePath" DROP NOT NULL,
+ALTER COLUMN "diffPath" DROP NOT NULL,
+ALTER COLUMN "lastImagePath" DROP NOT NULL;

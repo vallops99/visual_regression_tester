@@ -3,8 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import { Tester } from "src/Tester";
-
-const PORT = process.env.TESTER_PORT;
+import { Console } from "console";
 
 const app = express();
 const tester = new Tester();
@@ -31,8 +30,8 @@ app.post("/launch-test/:name", function(request, response) {
 	}));
 });
 
-app.get("/get-tests", function(request, response) {
-    const tests = tester.tests.filter(t => t.done || t.pending);
+app.get("/get-tests", async function(request, response) {
+    const tests = await tester.getTests({ showable: true });
     const areInvalid = tests.some(test => test.hasDiff);
 
 	response.send(JSON.stringify({
@@ -41,10 +40,8 @@ app.get("/get-tests", function(request, response) {
     }));
 });
 
-app.get("/get-test/:name", function(request, response) {
-	const test = tester.tests.find(test => {
-		return request.params.name && test.name === request.params.name;
-	});
+app.get("/get-test/:name", async function(request, response) {
+	const test = await tester.getTest(request.params.name);
 
 	if (test) {
 		return response.send(JSON.stringify(test));
@@ -55,9 +52,9 @@ app.get("/get-test/:name", function(request, response) {
 	}));
 });
 
-app.post("/set-tests", function(request, response) {
+app.post("/set-tests", async function(request, response) {
 	try {
-		tester.saveTests(request.body);
+		await tester.saveTests(request.body);
 		response.send();
 	} catch(err) {
 		response.status(400).send(JSON.stringify({
@@ -66,22 +63,23 @@ app.post("/set-tests", function(request, response) {
 	}
 });
 
-app.get("/get-notifications", function(request, response) {
-	const tests = tester.tests.reduce((memo: string[], test) => {
-		if (test.notified || !test.done) return memo;
-
-		test.notified = true;
-		memo.push(test.name);
-
-		return memo;
-	}, []);
+app.get("/get-notifications", async function(request, response) {
+	const testsTerminated = await tester.getTests({ notifiable: true });
 
 	response.send(JSON.stringify({
 		areTestsDone: tester.areTestsDone,
-		testsToReload: tests
+		testsToReload: testsTerminated
 	}));
+
+	for (const test of testsTerminated) {
+		test.notified = true;
+	}
+
+	tester.updateTests(testsTerminated);
 });
 
-app.listen(PORT, () => {
-	console.log(`Node running on http://localhost:${PORT}`);
+app.listen(process.env.BACKEND_PORT, () => {
+	console.log(`Node running on http://localhost:${process.env.BACKEND_PORT}`);
 });
+
+export default app;

@@ -22,8 +22,8 @@ services:
             - "${BACKEND_PORT}:${BACKEND_PORT}"
 
         volumes:
-            - ./backend/src:/usr/src/app/src
-            - test-images:/usr/src/app/static/test-images
+            - ./backend:/usr/src/app
+            - images:/usr/src/app/static
 
         env_file:
             - .env
@@ -49,4 +49,4 @@ services:
 
 volumes:
     app-pgdata:
-    test-images:
+    images:

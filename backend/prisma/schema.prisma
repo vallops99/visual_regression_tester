@@ -1,0 +1,70 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Tester {
+    id              Int         @id @default(autoincrement())
+    tests           Test[]
+
+    appUrl          String      @db.VarChar(2048)
+
+    threshold       Float       @default(0.3)
+}
+
+model Test {
+    name            String      @id
+
+    tester          Tester      @relation(fields: [testerId], references: [id])
+    testerId        Int
+
+    orderNumber     Int         @unique @default(autoincrement())
+
+    steps           Step[]
+
+    error           String?     @db.VarChar(1000)
+    diffPath        String?     @db.VarChar(2048)
+    imagePath       String?     @db.VarChar(2048)
+    lastImagePath   String?     @db.VarChar(2048)
+
+    done            Boolean     @default(false)
+    hasDiff         Boolean     @default(false)
+    isLogin         Boolean     @default(false)
+    pending         Boolean     @default(false)
+    notified        Boolean     @default(true)
+    needsLogin      Boolean     @default(false)
+
+    createdAt       DateTime    @default(now())
+}
+
+model Step {
+    id              Int         @id @default(autoincrement()) 
+    test            Test        @relation(fields: [testId], references: [name])
+    testId          String
+
+    action          Actions
+    args            Json
+}
+
+enum Actions {
+    tap
+    type
+    goto
+    click
+    focus
+    hover
+    goBack
+    reload
+    select
+    goForward
+    setGeolocation
+    waitForTimeout
+    waitForSelector
+    waitForNavigation
+    waitForNetworkIdle
+    setExtraHTTPHeaders
+}
