@@ -7,7 +7,7 @@ export const TestBox = styled.div`
     flex-direction: column;
     flex-wrap: nowrap;
 
-    height: 400px;
+    min-height: 400px;
     width: 380px;
 
     position: relative;

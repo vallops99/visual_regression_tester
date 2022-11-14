@@ -1,7 +1,11 @@
-import { Route, Routes } from "react-router";
 import { ThemeToggler } from "..";
+import { Route, Routes } from "react-router";
 
-import { TestsMain, TestDetail } from "../../pages";
+import {
+    TestsMain,
+    TestDetail,
+    TestCreate,
+} from "../../pages";
 import {
     NavbarNav,
     NavbarSide,
@@ -16,7 +20,7 @@ export function Navbar() {
             <NavbarNav>
                 <NavbarSide>
                     <NavbarLinkContainer>
-                        <NavbarLink to="/">
+                        <NavbarLink to="/" variant="logo">
                             VRT
                         </NavbarLink>
                     </NavbarLinkContainer>
@@ -30,6 +34,7 @@ export function Navbar() {
 
             <Routes>
                 <Route path="/" element={<TestsMain />} />
+                <Route path="/create" element={<TestCreate />} />
                 <Route path="/:testName" element={<TestDetail />} />
             </Routes>
         </MainContainer>

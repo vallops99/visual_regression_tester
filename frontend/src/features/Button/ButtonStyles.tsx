@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import { ColorType } from "../../utils";
 
 export const ButtonStyled = styled.button`
@@ -13,15 +14,37 @@ export const ButtonStyled = styled.button`
     color: white;
     background-color: var(--default);
 
+    font-weight: bold;
+
     cursor: pointer;
 
     :hover {
         background-color: var(--default-d);
     }
 
-    ${({ colorType, variant }: { colorType: ColorType, variant?: String }) => {
+    ${({ colorType, variant }: { colorType: ColorType, variant?: "outlined" | "icon" }) => {
+        if (variant === "icon") {
+            return `
+                width: fit-content;
+                height: fit-content;
+
+                margin: 0;
+                padding: 0;
+
+                border: none;
+                
+                color: var(--${colorType});
+                background-color: transparent;
+
+                &:hover {
+                    color: var(--${colorType}-d);
+                    background-color: transparent;
+                }
+            `;
+        }
+
         let outlinedStyle = "";
-        if (variant === 'outlined') {
+        if (variant === "outlined") {
             outlinedStyle = `
                 color: var(--${colorType}-d);
                 border-width: 2px;

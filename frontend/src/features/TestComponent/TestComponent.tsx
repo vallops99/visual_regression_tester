@@ -42,7 +42,7 @@ export function TestComponent({ test, onClickSetTests, waitForNotification } : P
             </TestBodyContainer>
             <Divider orientation="horizontal" />
             <TestActions>
-                {test.error ? <Paragraph variant="error">{test.error}</Paragraph> :
+                {test.error ? <Paragraph variant="error">Test error, Show in depth to know more</Paragraph> :
                     <>
                         {!test?.hasDiff && <Paragraph>Test has found no differences</Paragraph>}
                         {test?.hasDiff && <>

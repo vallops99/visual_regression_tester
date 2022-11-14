@@ -1,5 +1,9 @@
 export * from "./Img/Img";
+export * from "./Steps/Steps";
+export * from "./Label/Label";
+export * from "./Input/Input";
 export * from "./api/apiSlice";
+export * from "./Select/Select";
 export * from "./Button/Button";
 export * from "./Navbar/Navbar";
 export * from "./Spinner/Spinner";
@@ -8,3 +12,5 @@ export * from "./Paragraph/Paragraph";
 export * from "./ImgButton/ImgButton";
 export * from "./ThemeToggler/ThemeToggler";
 export * from "./TestComponent/TestComponent";
+export * from "./StepComponent/StepComponent";
+export * from "./StepComponent/StepInputFields";

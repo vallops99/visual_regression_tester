@@ -1,9 +1,19 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { GetNotificationsReturnType, TestsReturnType, SetTestsParam, Test } from "../../utils";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+import {
+    Test,
+    BaseTest,
+    AddStepType,
+    SetTestsParam,
+    TestsReturnType,
+    GetLastStepIdReturnType,
+    GetNotificationsReturnType,
+    Step,
+} from "../../utils";
 
 export const apiSlice = createApi({
     reducerPath: "api",
-    tagTypes: ["Test"],
+    tagTypes: ["Test", "StepId"],
 
     baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
 
@@ -20,18 +30,36 @@ export const apiSlice = createApi({
             providesTags: ["Test"],
         }),
 
-        getTest: builder.query<Test, String>({
+        getTest: builder.query<Test, string>({
             query: (name) => `/get-test/${name}`,
             providesTags: (result) => [{ type: "Test", id: result?.name }],
         }),
 
-        setTests: builder.mutation<void | { error: String }, SetTestsParam>({
+        setTests: builder.mutation<void | { error: string }, SetTestsParam>({
             query: (body) => ({
                 url: "/set-tests",
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ["Test", "StepId"]
+        }),
+
+        createTest: builder.mutation<void, BaseTest>({
+            query: (body) => ({
+                url: "/create-test",
                 method: "POST",
                 body,
             }),
-            invalidatesTags: ["Test"]
+            invalidatesTags: ["Test", "StepId"],
+        }),
+
+        deleteTest: builder.mutation<void, { name: string }>({
+            query: (body) => ({
+                url: "/delete-test",
+                method: "DELETE",
+                body,
+            }),
+            invalidatesTags: ["Test", "StepId"],
         }),
 
         getNotifications: builder.mutation<GetNotificationsReturnType, void>({
@@ -41,14 +69,52 @@ export const apiSlice = createApi({
 
                 return [];
             }
-        })
+        }),
+
+        updateOrCreateStep: builder.mutation<void, AddStepType>({
+            query: (body) => ({
+                url: "/set-step",
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["Test", "StepId"],
+        }),
+
+        reorderSteps: builder.mutation<void, Step[]>({
+            query: (body) => ({
+                url: "/reorder-steps",
+                method: "PUT",
+                body,
+            }),
+        }),
+
+        deleteStep: builder.mutation<void, { id: number }>({
+            query: (body) => ({
+                url: "/delete-step",
+                method: "DELETE",
+                body,
+            }),
+            invalidatesTags: ["Test", "StepId"],
+        }),
+
+        getLastStepId: builder.query<GetLastStepIdReturnType, void>({
+            query: () => "/get-last-step-id",
+            providesTags: ["StepId"],
+        }),
     })
 });
 
 export const {
-    useLaunchTestsMutation,
     useGetTestQuery,
     useGetTestsQuery,
+    useGetLastStepIdQuery,
+
     useSetTestsMutation,
-    useGetNotificationsMutation
+    useCreateTestMutation,
+    useDeleteStepMutation,
+    useDeleteTestMutation,
+    useLaunchTestsMutation,
+    useReorderStepsMutation,
+    useGetNotificationsMutation,
+    useUpdateOrCreateStepMutation,
 } = apiSlice

@@ -24,7 +24,7 @@ export const ButtonContainer = styled.div`
 `;
 
 export const ImgButtonContainer = styled.div`
-    width: 600px;
+    max-width: 600px;
 
     position: relative;
 

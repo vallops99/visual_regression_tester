@@ -4,7 +4,11 @@ import { Link } from "react-router-dom";
 
 export const MainContainer = styled.div`
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
+
+
+    display: flex;
+    flex-direction: column;
 `;
 
 export const NavbarNav = styled.nav`
@@ -13,7 +17,7 @@ export const NavbarNav = styled.nav`
     align-items: center;
 
     width: 100%;
-    height: 4rem;
+    min-height: 4rem;
 
     background-color: var(--primary-color);
 `;
@@ -36,10 +40,11 @@ export const NavbarLinkContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    margin: 0 1rem;
 `;
 
 export const NavbarLink = styled(Link)`
-    font-weight: bold;
     text-decoration: none;
 
     color: var(--text-color);
@@ -47,4 +52,13 @@ export const NavbarLink = styled(Link)`
     &:hover {
         color: var(--text-color-hover);
     }
+
+    ${({ variant="default" }: { variant?: "default" | "logo" }) => {
+        if (variant === "logo") {
+            return `
+                font-weight: bold;
+            `;
+        }
+        return ``;
+    }}
 `;

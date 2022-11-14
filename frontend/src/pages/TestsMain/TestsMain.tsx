@@ -1,5 +1,8 @@
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BsPlusLg } from "react-icons/bs";
 
+import { Test } from "../../utils";
 import {
     Button,
     Spinner,
@@ -10,21 +13,27 @@ import {
     useLaunchTestsMutation,
     useGetNotificationsMutation,
 } from "../../features";
-import { Test } from "../../utils";
 import {
+    Cross,
     Tests,
-    TestsContainer,
+    CreateTest,
     UtilsContainer,
+    TestsContainer,
+    DividerContainer,
+    TestsMainContainer,
+    CreateTestContainer,
 } from './TestsMainStyles';
 
 export function TestsMain() {
-    const { data: testsObject = { tests: [], areInvalid: true }, isFetching } = useGetTestsQuery();
-
     const [waitForNotification, setWaitForNotification] = useState(false);
+    
+    const { data: testsObject = { tests: [], areInvalid: true }, isFetching } = useGetTestsQuery();
 
     const [setTests] = useSetTestsMutation();
     const [launchTests] = useLaunchTestsMutation();
     const [getNotifications] = useGetNotificationsMutation();
+
+    const navigate = useNavigate();
 
     const checkNotifications = useCallback((intervalId: NodeJS.Timer) => {
         getNotifications().unwrap().then(response => {
@@ -50,29 +59,41 @@ export function TestsMain() {
         });
     }, [setTests]);
 
+    const onClickCreateTest = useCallback(() => navigate('/create'), [navigate]);
+
     return (
-        <Tests>
-            {isFetching && <Spinner variant="viewport" />}
-            <TestsContainer>
-                {testsObject.tests.map(test => (
-                    <TestComponent
-                        test={test}
-                        key={test.name}
-                        onClickSetTests={onClickSetTests}
-                        waitForNotification={waitForNotification}
-                    />
-                ))}
-            </TestsContainer>
-            <Divider />
-            <UtilsContainer>
-                <Button onClick={onClickLaunchTests}>Launch tests</Button>
-                {testsObject.areInvalid && 
-                    <>
-                        <Button colorType="success" onClick={() => onClickSetTests(testsObject.tests, true)}>Accept all</Button>
-                        <Button colorType="error" onClick={() => onClickSetTests(testsObject.tests, false)}>Reject All</Button>
-                    </>
-                }
-            </UtilsContainer>
-        </Tests>
+        <TestsMainContainer>
+            <Tests>
+                {isFetching && <Spinner variant="viewport" />}
+                <TestsContainer>
+                    {testsObject.tests.map(test => (
+                        <TestComponent
+                            test={test}
+                            key={test.name}
+                            onClickSetTests={onClickSetTests}
+                            waitForNotification={waitForNotification}
+                        />
+                    ))}
+                </TestsContainer>
+                <Divider />
+                <UtilsContainer>
+                    <Button onClick={onClickLaunchTests}>Launch tests</Button>
+                    {testsObject.areInvalid && 
+                        <>
+                            <DividerContainer>
+                                <Divider orientation="horizontal" />
+                            </DividerContainer>
+                            <Button colorType="success" onClick={() => onClickSetTests(testsObject.tests, true)}>Accept all</Button>
+                            <Button colorType="error" onClick={() => onClickSetTests(testsObject.tests, false)}>Reject All</Button>
+                        </>
+                    }
+                </UtilsContainer>
+            </Tests>
+            <CreateTestContainer>
+                <CreateTest onClick={onClickCreateTest}>
+                    <Cross><BsPlusLg /></Cross>
+                </CreateTest>
+            </CreateTestContainer>
+        </TestsMainContainer>
     );
 }

@@ -6,11 +6,12 @@ import { ButtonStyled } from "./ButtonStyles";
 export interface ButtonProps {
     children: ReactNode;
     
-    variant?: String;
+    type?: "button" | "submit" | "reset";
+    variant?: "outlined" | "icon";
     colorType?: ColorType;
     onClick?: () => void;
 };
 
-export function Button({ colorType = "default", variant, onClick, children }: ButtonProps) {
-    return <ButtonStyled colorType={colorType} variant={variant} onClick={onClick}>{children}</ButtonStyled>;
+export function Button({ colorType = "default", type, variant, onClick, children }: ButtonProps) {
+    return <ButtonStyled type={type} colorType={colorType} variant={variant} onClick={onClick}>{children}</ButtonStyled>;
 }
