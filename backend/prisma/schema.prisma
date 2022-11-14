@@ -13,7 +13,11 @@ model Tester {
 
     appUrl          String      @db.VarChar(2048)
 
+    imagesFolder    String
+
     threshold       Float       @default(0.3)
+
+    createdAt       DateTime    @default(now())
 }
 
 model Test {
@@ -48,6 +52,10 @@ model Step {
 
     action          Actions
     args            Json
+
+    order           Int
+
+    createdAt       DateTime    @default(now())
 }
 
 enum Actions {
@@ -61,10 +69,10 @@ enum Actions {
     reload
     select
     goForward
+    waitListener
     setGeolocation
     waitForTimeout
     waitForSelector
     waitForNavigation
     waitForNetworkIdle
-    setExtraHTTPHeaders
 }
