@@ -49,7 +49,7 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
             setLastId(lastId - 1);
             onClickCloseEdit(index);
         }
-    }, [index, step.action, step.args, step.isNew, lastId, setLastId, onClickCloseEdit]);
+    }, [index, step, lastId, setLastId, onClickCloseEdit]);
 
     const onClickDeleteStep = useCallback(() => deleteStep({ id: step.id}), [step.id, deleteStep]);
 
@@ -63,13 +63,13 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
         updateLocalSteps(
             index,
             {
-                id: step.id,
-                isNew: step.isNew,
+                ...step,
+
                 action,
                 args,
             }
         );
-    }, [index, step.isNew, step.id, updateLocalSteps]);
+    }, [index, step, updateLocalSteps]);
 
     const onChangeArgs = useCallback((newArg: Arg, argType: string, argIndex: number, actionIndex: number) => {
         const argsCopy = [...argsState];
@@ -89,21 +89,23 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
             updateLocalSteps(
                 actionIndex,
                 {
-                    id: step.id,
+                    ...step,
+
                     isNew: true,
                     action: actionState,
                     args: argsCopy
                 }          
             );
         }
-    }, [argsState, actionState, step.isNew, step.id, updateLocalSteps]);
+    }, [argsState, actionState, step, updateLocalSteps]);
 
     const onSubmitForm = useCallback((event: React.FormEvent<HTMLFormElement>) => {
         if (testName) {
             updateOrCreateStep({
+                ...step,
+
                 testId: testName,
                 isNew: true,
-                id: step.id,
                 args: argsState,
                 action: actionState
             });
@@ -113,7 +115,8 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
         updateLocalSteps(
             index,
             {
-                id: step.id,
+                ...step,
+
                 isNew: false,
                 action: actionState,
                 args: argsState
@@ -121,7 +124,7 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
         )
 
         event.preventDefault();
-    }, [actionState, argsState, step.id, testName, index, updateLocalSteps, updateOrCreateStep]);
+    }, [actionState, argsState, step, testName, index, updateLocalSteps, updateOrCreateStep]);
 
     let inputs = <StepInputFields
         stepId={step.id}

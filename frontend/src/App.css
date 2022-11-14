@@ -10,6 +10,9 @@
   --error: #DA2313;
   --error-transparent: #DA231311;
   --error-d: #CA1303;
+
+  --link: #93b3f2;
+  --link-visited: #BC8CF2;
 }
 
 .App {

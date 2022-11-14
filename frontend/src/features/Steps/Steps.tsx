@@ -37,6 +37,7 @@ export function Steps({ testName }: Props) {
                 id: lastId + 1,
                 isNew: true,
                 action: "tap",
+                order: steps.length,
                 args: [...ACTIONS_INPUTS_MAP["tap"].default],
             }
         ]);
@@ -48,7 +49,7 @@ export function Steps({ testName }: Props) {
         const stepsCopy = [...steps];
         stepsCopy.splice(index, 1);
 
-        setSteps(stepsCopy);
+        setSteps(stepsCopy.map((step, index) => ({ ...step, order: index })));
     }, [steps, setSteps]);
 
     const onDragEnd = useCallback((result: DropResult) => {
@@ -76,7 +77,7 @@ export function Steps({ testName }: Props) {
         // If we have a legit test (a test synched with the db) we can sync the
         // reorder on the db
         if (testName) {
-            reorderSteps(reorderedSteps);
+            reorderSteps(reorderedSteps.map((step, index) => ({ ...step, order: index })));
         }
 
         setSteps([...reorderedSteps, ...newSteps]);

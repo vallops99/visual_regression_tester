@@ -51,3 +51,13 @@ export const TestButtonConfirmations = styled.div`
 export const TestTitle = styled.h3`
     color: var(--text-color);
 `;
+
+export const ShowLink = styled.a`
+    margin: .5rem;
+
+    color: var(--link);
+
+    &:visited {
+        color: var(--link-visited);
+    }
+`;

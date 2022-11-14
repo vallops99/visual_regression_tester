@@ -84,7 +84,7 @@ export class Tester {
     }
 
     async reorderSteps(steps: Step[]) {
-        return await reorderStepsQuery(steps.map((step, index) => ({...step, order: index})));
+        return await reorderStepsQuery(steps);
     }
 
     async deleteStep(stepObjId: { id: number }) {

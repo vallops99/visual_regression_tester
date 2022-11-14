@@ -1,10 +1,8 @@
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-
 import { Test } from "../../utils";
 import { Button, Spinner, Divider, Paragraph } from "..";
 import {
     TestBox,
+    ShowLink,
     TestTitle,
     TestImage,
     TestActions,
@@ -20,12 +18,6 @@ interface Props {
 }
 
 export function TestComponent({ test, onClickSetTests, waitForNotification } : Props) {
-    const navigate = useNavigate();
-
-    const onClickShow = useCallback(() => {
-        navigate(`/${test?.name}`);
-    }, [navigate, test?.name]);
-
     return (
         <TestBox>
 
@@ -65,11 +57,11 @@ export function TestComponent({ test, onClickSetTests, waitForNotification } : P
                         </>}
                     </>
                 }
-                <Button
-                    onClick={onClickShow}
+                <ShowLink
+                    href={`/${test?.name}`}
                 >
                     Show in depth
-                </Button>
+                </ShowLink>
             </TestActions>
         </TestBox>
     );

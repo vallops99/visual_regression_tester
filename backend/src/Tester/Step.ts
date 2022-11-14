@@ -35,11 +35,11 @@ export async function runSteps(steps: Step[], tester: Tester) {
 async function checkAndWaitForListener(step: Step, tester: Tester) {
     const isListenerWaiter = step.action === LISTENER_WAITER_ACTION;
 
-    const args = step.args as Prisma.JsonArray;
-    const argObj = (args[0] as { id: number }).hasOwnProperty('id') && args[0] as { id: number };
-
     if (isListenerWaiter) {
-        if (args.length && argObj) {
+        const args = step.args as Prisma.JsonArray;
+        const argObj = (args[0] as { id: number }).hasOwnProperty('id') && args[0] as { id: number };
+
+        if (argObj) {
                 await tester.listenersOn[argObj.id];
         } else {
             throw Error(`Step: ${step.action} is missing arg: { id: number }`);

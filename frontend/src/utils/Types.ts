@@ -49,6 +49,7 @@ export type Arg = string | ArgAsObject;
 export type Step = {
     id: number;
     args: Arg[];
+    order: number;
     isNew: boolean;
     action: Actions;
 };
