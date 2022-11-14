@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import { Tester } from "src/Tester";
-import { Console } from "console";
+import { Prisma } from "@prisma/client";
 
 const app = express();
 const tester = new Tester();
@@ -19,22 +19,22 @@ app.post("/launch-tests", function(request, response) {
 
 	tester.launchTests();
 
-	response.send(JSON.stringify({
+	return response.send(JSON.stringify({
 		message: "Tests started"
 	}));
 });
 
-app.post("/launch-test/:name", function(request, response) {
-	response.send(JSON.stringify({
-		message: "Test started"
-	}));
-});
+// app.post("/launch-test/:name", function(request, response) {
+// 	return response.send(JSON.stringify({
+// 		message: "Test started"
+// 	}));
+// });
 
 app.get("/get-tests", async function(request, response) {
-    const tests = await tester.getTests({ showable: true });
-    const areInvalid = tests.some(test => test.hasDiff);
+    const tests = (await tester.getTests());
+	const areInvalid = tests.some(test => test.hasDiff);
 
-	response.send(JSON.stringify({
+	return response.send(JSON.stringify({
         tests,
         areInvalid
     }));
@@ -52,19 +52,21 @@ app.get("/get-test/:name", async function(request, response) {
 	}));
 });
 
-app.post("/set-tests", async function(request, response) {
+app.put("/set-tests", async function(request, response) {
 	try {
 		await tester.saveTests(request.body);
-		response.send();
+		return response.send(JSON.stringify({
+			msg: "Test updated"
+		}));
 	} catch(err) {
-		response.status(400).send(JSON.stringify({
-			data: err
+		return response.status(400).send(JSON.stringify({
+			error: err
 		}));
 	}
 });
 
 app.get("/get-notifications", async function(request, response) {
-	const testsTerminated = await tester.getTests({ notifiable: true });
+	const testsTerminated = await tester.getTests(true);
 
 	response.send(JSON.stringify({
 		areTestsDone: tester.areTestsDone,
@@ -76,6 +78,102 @@ app.get("/get-notifications", async function(request, response) {
 	}
 
 	tester.updateTests(testsTerminated);
+});
+
+app.post("/create-test", async function(request, response) {
+	try {
+		await tester.createTest(request.body);
+
+		return response.send(JSON.stringify({
+			msg: "Test created"
+		}));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			error: err
+		}));
+	}
+});
+
+app.post("/edit-test", async function(request, response) {
+	try {
+		await tester.editTests(request.body);
+
+		return response.send(JSON.stringify({
+			msg: "Test edited"
+		}));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			error: err
+		}));
+	}
+});
+
+app.delete("/delete-test", async function(request, response) {
+	try {
+		await tester.deleteTest(request.body);
+
+		response.send(JSON.stringify({
+			msg: "Test deleted"
+		}));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			error: err
+		}));
+	}
+});
+
+app.post("/set-step", async function(request, response) {
+	try {
+		await tester.updateOrCreateStep(request.body);
+
+		return response.send(JSON.stringify({
+			msg: "Step edited/created"
+		}));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			error: err
+		}));
+	}
+});
+
+app.put("/reorder-steps", async function(request, response) {
+	try {
+		await tester.reorderSteps(request.body);
+
+		return response.send(JSON.stringify({
+			msg: "Step reordered"
+		}));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			error: err
+		}))
+	}
+});
+
+app.delete("/delete-step", async function(request, response) {
+	try {
+		await tester.deleteStep(request.body);
+
+		return response.send(JSON.stringify({
+			msg: "Step deleted"
+		}));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			error: err
+		}));
+	}
+});
+
+app.get("/get-last-step-id", async function(request, response) {
+	try {
+		return response.send(JSON.stringify(
+			await tester.getLastStepId() || 0
+		));
+	} catch(err) {
+		return response.status(400).send(JSON.stringify({
+			errro: err
+		}));
+	}
 });
 
 app.listen(process.env.BACKEND_PORT, () => {

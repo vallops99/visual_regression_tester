@@ -89,6 +89,8 @@ export async function execTest(test: Test, tester: Tester) {
                 console.log('Difference file created');
             } else {
                 console.log('There are no differences');
+
+                test.hasDiff = false;
                 fs.unlink(`${uploadTo}/${currentFileName}.png`, () => {});
             }
         });

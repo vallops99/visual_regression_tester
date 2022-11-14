@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Step } from "@prisma/client";
 
-import type {  Tester } from "src/Tester";
+import type { Tester } from "src/Tester";
 
 // type optionsObject = {
 //     delay?: number;
@@ -23,10 +23,13 @@ import type {  Tester } from "src/Tester";
 
 export type Test = {
     done?: boolean;
+    isLogin: boolean;
     pending?: boolean;
     hasDiff?: boolean;
     notified?: boolean;
     needsLogin?: boolean;
+
+    orderNumber: number;
 
     name: string;
     error: string | null;
@@ -36,12 +39,6 @@ export type Test = {
 
     steps: Step[];
 }
-
-export type Step = {
-    args: Prisma.JsonValue;
-    action: string;
-};
-
 
 export type TestConfig = {
     name: string;

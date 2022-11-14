@@ -2,14 +2,22 @@ import fs from "fs";
 import { PNG } from "pngjs";
 import puppeteer from "puppeteer";
 import pixelmatch from "pixelmatch";
+import { Step } from "@prisma/client";
 
-import { IfilteringOptions, Test } from "src/utils";
+import { Test } from "src/utils";
 import { execTest, prepareTest } from "src/Tester";
 import {
-    getTesterQuery,
-    getTestsQuery,
     getTestQuery,
-    updateTestsQuery
+    getTestsQuery,
+    getTesterQuery,
+    editTestsQuery,
+    deleteStepQuery,
+    createTestQuery,
+    deleteTestQuery,
+    updateTestsQuery,
+    reorderStepsQuery,
+    getLastStepIdQuery,
+    updateOrCreateStepQuery,
 } from "src/Queries";
 
 export class Tester {
@@ -25,6 +33,7 @@ export class Tester {
 
     currentPage!: puppeteer.Page;
     
+    listenersOn: { [stepId: number]: any } = {};
 
     isLoggedIn = false;
     areTestsDone = true;
@@ -50,16 +59,44 @@ export class Tester {
         });
     }
 
-    async getTests(filteringOptions?: IfilteringOptions) {
-        return await getTestsQuery(this.id, filteringOptions);
+    async getTests(notifiable?: boolean) {
+        return await getTestsQuery(this.id, notifiable);
     }
 
     async getTest(testName: string) {
         return await getTestQuery(this.id, testName);
     }
 
+    async createTest(test: Test) {
+        await createTestQuery(this.id, test)
+    }
+    
     async updateTests(tests: Test[]) {
         return await updateTestsQuery(tests);
+    }
+
+    async editTests(tests: Test[]) {
+        return await editTestsQuery(tests)
+    }
+
+    async updateOrCreateStep(step: Step) {
+        return await updateOrCreateStepQuery(step);
+    }
+
+    async reorderSteps(steps: Step[]) {
+        return await reorderStepsQuery(steps.map((step, index) => ({...step, order: index})));
+    }
+
+    async deleteStep(stepObjId: { id: number }) {
+        return await deleteStepQuery(stepObjId);
+    }
+
+    async deleteTest(testObjName: { name: string }) {
+        return await deleteTestQuery(testObjName);
+    }
+
+    async getLastStepId() {
+        return await getLastStepIdQuery();
     }
 
     async saveTests({ tests, accept }: { tests: Test[], accept: boolean }) {
@@ -92,8 +129,6 @@ export class Tester {
 
                 fs.rename(fullLastImagePath, `${this.basePath}/${test.imagePath}`, fileErrorHandler);
             }
-
-            console.log(test);
         }
 
         await updateTestsQuery(tests);
