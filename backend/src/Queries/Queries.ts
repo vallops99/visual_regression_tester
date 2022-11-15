@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, Step } from "@prisma/client";
-import { Test } from "src/utils";
-import { textSpanContainsTextSpan } from "typescript";
+
+import { BaseTest, Test } from "src/utils";
 
 export const prisma = new PrismaClient();
 
@@ -46,10 +46,8 @@ export async function getTestsQuery(testerId: number, notifiable?: boolean) {
 export async function getTestQuery(testerId: number, name: string) {
     return await prisma.test.findFirst({
         where: {
-            AND: [
-                { name },
-                { testerId },
-            ],
+            name,
+            testerId,
         },
         include: {
             steps: {
@@ -59,6 +57,22 @@ export async function getTestQuery(testerId: number, name: string) {
             }
         }
     });
+}
+
+export async function getLoginTest(testerId: number) {
+    return await prisma.test.findFirst({
+        where: {
+            testerId,
+            isLogin: true,
+        },
+        include: {
+            steps: {
+                orderBy: {
+                    order: 'asc'
+                }
+            }
+        }
+    })
 }
 
 export async function updateTestsQuery(tests: Test[]) {
@@ -89,13 +103,12 @@ export async function updateTestsQuery(tests: Test[]) {
     return await Promise.all(arrayOfPromises);
 }
 
-export async function createTestQuery(testerId: number, test: Test) {
+export async function createTestQuery(testerId: number, test: BaseTest) {
     await prisma.test.create({
         data: {
             name: test.name,
             testerId: testerId,
             isLogin: test.isLogin,
-            needsLogin: test.needsLogin,
             orderNumber: test.orderNumber
         }
     });
@@ -125,7 +138,6 @@ export async function editTestsQuery(tests: Test[]) {
             data: {
                 name: test.name,
                 isLogin: test.isLogin,
-                needsLogin: test.needsLogin,
             }
         }));
 
