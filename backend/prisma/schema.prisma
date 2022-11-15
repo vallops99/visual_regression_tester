@@ -40,7 +40,6 @@ model Test {
     isLogin         Boolean     @default(false)
     pending         Boolean     @default(false)
     notified        Boolean     @default(true)
-    needsLogin      Boolean     @default(false)
 
     createdAt       DateTime    @default(now())
 }
@@ -62,6 +61,7 @@ enum Actions {
     tap
     type
     goto
+    login
     click
     focus
     hover
