@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import { Tester } from "src/Tester";
-import { Prisma } from "@prisma/client";
+import { BaseTest } from "./utils";
 
 const app = express();
 const tester = new Tester();
@@ -31,7 +31,7 @@ app.post("/launch-tests", function(request, response) {
 // });
 
 app.get("/get-tests", async function(request, response) {
-    const tests = (await tester.getTests());
+    const tests = await tester.getTests();
 	const areInvalid = tests.some(test => test.hasDiff);
 
 	return response.send(JSON.stringify({
@@ -41,15 +41,19 @@ app.get("/get-tests", async function(request, response) {
 });
 
 app.get("/get-test/:name", async function(request, response) {
-	const test = await tester.getTest(request.params.name);
+	try {
+		const test = await tester.getTest(request.params.name);
 
-	if (test) {
+		if (!test) {
+			throw Error("Test not found");
+		}
+
 		return response.send(JSON.stringify(test));
+	} catch(err) {
+		return response.status(404).send(JSON.stringify({
+			error: err
+		}));
 	}
-
-	return response.status(404).send(JSON.stringify({
-		error: "Test not found"
-	}));
 });
 
 app.put("/set-tests", async function(request, response) {
@@ -82,7 +86,19 @@ app.get("/get-notifications", async function(request, response) {
 
 app.post("/create-test", async function(request, response) {
 	try {
-		await tester.createTest(request.body);
+		const test: BaseTest = {
+			name: request.body.name || "",
+			steps: request.body.steps || [],
+			isLogin: request.body.isLogin || false,
+			needsLogin: request.body.needsLogin || false,
+			orderNumber: request.body.orderNumber || 0,
+		};
+
+		if (!test.name.length) {
+			throw Error("Test is missing a name");
+		}
+
+		await tester.createTest(test);
 
 		return response.send(JSON.stringify({
 			msg: "Test created"
