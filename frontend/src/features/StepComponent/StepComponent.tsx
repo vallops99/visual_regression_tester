@@ -157,9 +157,11 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
             <StepInfo>
                 <StepLabel>Action:</StepLabel> <StepValue>{actionState}</StepValue>
             </StepInfo>
-            <StepInfo>
-                <StepLabel>with values:</StepLabel> <StepValue>{JSON.stringify(argsState)}</StepValue>
-            </StepInfo>
+            {!!argsState.length && (
+                <StepInfo>
+                    <StepLabel>with values:</StepLabel> <StepValue>{JSON.stringify(argsState)}</StepValue>
+                </StepInfo>
+            )}
             <EditIconContainer>
                 <Button type="button" variant="icon" onClick={onClickEdit}><MdEdit /></Button>
             </EditIconContainer>

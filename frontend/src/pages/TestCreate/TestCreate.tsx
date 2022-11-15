@@ -23,7 +23,6 @@ export function TestCreate() {
 
     const [name, setName] = useState("");
     const [isLogin, setIsLogin] = useState(false);
-    const [needsLogin, setNeedsLogin] = useState(false);
 
     const navigate = useNavigate();
     const [createTest] = useCreateTestMutation();
@@ -36,22 +35,17 @@ export function TestCreate() {
         (event: ChangeEvent<HTMLInputElement>) => setIsLogin(!!event.target.value),
         [setIsLogin]
     );
-    const onChangeNeedsLogin = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => setNeedsLogin(!!event.target.value),
-        [setNeedsLogin]
-    );
 
     const onSubmitCreate = useCallback((event: FormEvent<HTMLFormElement>) => {
         createTest({
             name,
             steps,
             isLogin,
-            needsLogin,
         }).then(() => {
             navigate(`/${name}`);
         });
         event.preventDefault();
-    }, [name, isLogin, needsLogin, steps, createTest, navigate]);
+    }, [name, isLogin, steps, createTest, navigate]);
 
     useEffect(() => {
         setSteps([]);
@@ -71,6 +65,7 @@ export function TestCreate() {
                                 placeholder="Test name..."
                                 value={name}
                                 onChange={onChangeName}
+                                required={true}
                             />
                         </InputContainer>
                         <InputContainer>
@@ -83,17 +78,6 @@ export function TestCreate() {
                                 onChange={onChangeIsLogin}
                             />
                         </InputContainer>
-                        <InputContainer>
-                            <Label htmlFor="needsLogin">Does this test need a logged in session?</Label>
-                            <Input
-                                id="needsLogin"
-                                name="needsLogin"
-                                type="checkbox"
-                                value={needsLogin ? 1 : 0}
-                                onChange={onChangeNeedsLogin}
-                            />
-                        </InputContainer>
-
                         <Steps />
                     </InputsContainer>
                     <Divider />

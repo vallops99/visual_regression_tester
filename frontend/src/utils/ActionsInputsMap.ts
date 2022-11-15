@@ -1,4 +1,4 @@
-export const buttonOptionsValues = ["", "left", "right", "middle", "back", "forward"] as const;
+export const buttonOptionsValues = ["left", "right", "middle", "back", "forward"] as const;
 export const waitUntilValues = ["load", "domcontentloaded", "networkidle0", "networkidle2"] as const;
 
 export const ACTIONS_INPUTS_MAP = {
@@ -29,8 +29,12 @@ export const ACTIONS_INPUTS_MAP = {
             }],
         }],
     },
+    login: {
+        default: [],
+        config: [],
+    },
     goto: {
-        default: ["", { timeout: 30000, waitUntil: "load" }],
+        default: ["", { timeout: 30000, waitUntil: waitUntilValues[0] }],
         config: [{
             name: "URL",
             type: "text",
@@ -50,7 +54,7 @@ export const ACTIONS_INPUTS_MAP = {
         }],
     },
     click: {
-        default: ["", { delay: 0, button: "", clickCount: 1 }],
+        default: ["", { delay: 0, button: buttonOptionsValues[0], clickCount: 1 }],
         config: [{
             name: "selector",
             type: "text",
@@ -90,7 +94,7 @@ export const ACTIONS_INPUTS_MAP = {
         }],
     },
     goBack: {
-        default: [{ timeout: 30000, waitUntil: "load" }],
+        default: [{ timeout: 30000, waitUntil: waitUntilValues[0] }],
         config: [{
             type: "object",
             values: [{
@@ -106,7 +110,7 @@ export const ACTIONS_INPUTS_MAP = {
         }],
     },
     reload: {
-        default: [{ timeout: 30000, waitUntil: "load" }],
+        default: [{ timeout: 30000, waitUntil: waitUntilValues[0] }],
         config: [{
             type: "object",
             values: [{
@@ -134,7 +138,7 @@ export const ACTIONS_INPUTS_MAP = {
         }],
     },
     goForward: {
-        default: [{ timeout: 30000, waitUntil: "load" }],
+        default: [{ timeout: 30000, waitUntil: waitUntilValues[0] }],
         config: [{
             type: "object",
             values: [{
@@ -211,7 +215,7 @@ export const ACTIONS_INPUTS_MAP = {
         }],
     },
     waitForNavigation: {
-        default: [{ timeout: 30000, waitUntil: "load" }],
+        default: [{ timeout: 30000, waitUntil: waitUntilValues[0] }],
         config: [{
             type: "object",
             values: [{

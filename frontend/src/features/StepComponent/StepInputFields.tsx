@@ -100,10 +100,14 @@ export function StepInputFields({ stepId, args, action, actionIndex, onChangeArg
                 />
             </StepInfo>
 
-            <StepLabel>with values:</StepLabel>
-            <ArgsContainer>
-                {argsFields}
-            </ArgsContainer>
+            {!!argsFields.length && (
+                <>
+                    <StepLabel>with values:</StepLabel>
+                    <ArgsContainer>
+                        {argsFields}
+                    </ArgsContainer>
+                </>
+            )}
 
             <CloseIconContainer>
                 <Button

@@ -24,6 +24,10 @@
   pointer-events: none;
 }
 
+.body-dark {
+  background-color: #1A2730;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-float infinite 3s ease-in-out;

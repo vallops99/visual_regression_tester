@@ -53,7 +53,7 @@ export const TestTitle = styled.h3`
 `;
 
 export const ShowLink = styled.a`
-    margin: .5rem;
+    margin: 1rem;
 
     color: var(--link);
 

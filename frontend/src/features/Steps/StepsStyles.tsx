@@ -56,7 +56,7 @@ export const StepContainer = styled.div`
 `;
 
 export const StepWrapper = styled.div`
-    padding: 1.5rem 1rem .5rem 1rem;
+    padding: 1.5rem 1rem 1.5rem 1rem;
 `;
 
 export const GrabIconContainer = styled.div`

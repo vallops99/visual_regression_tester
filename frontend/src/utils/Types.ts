@@ -4,7 +4,6 @@ export type BaseTest = {
     name: string;
 
     isLogin: boolean;
-    needsLogin: boolean;
 
     steps: Step[];
 };
