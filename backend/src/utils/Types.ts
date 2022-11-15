@@ -2,42 +2,25 @@ import { Prisma, Step } from "@prisma/client";
 
 import type { Tester } from "src/Tester";
 
-// type optionsObject = {
-//     delay?: number;
-//     timeout?: number;
-//     idleTime?: number;
-//     accuracy?: number;
-//     latitude?: number;
-//     longitude?: number;
-//     clickCount?: number;
-
-//     hidden?: boolean;
-//     visible?: boolean;
-
-//     referer?: string;
-
-//     button?: MouseButton;
-
-//     waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[]
-// };
-
-export type Test = {
-    done?: boolean;
+export type BaseTest = {
+    name: string;
     isLogin: boolean;
+    orderNumber: number;
+    needsLogin?: boolean;
+    
+    steps: Step[];
+};
+
+export type Test = BaseTest & {
+    done?: boolean;
     pending?: boolean;
     hasDiff?: boolean;
     notified?: boolean;
-    needsLogin?: boolean;
 
-    orderNumber: number;
-
-    name: string;
     error: string | null;
     diffPath: string | null;
     imagePath: string | null;
     lastImagePath: string | null;
-
-    steps: Step[];
 }
 
 export type TestConfig = {
