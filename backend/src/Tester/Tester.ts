@@ -4,7 +4,7 @@ import puppeteer from "puppeteer";
 import pixelmatch from "pixelmatch";
 import { Step } from "@prisma/client";
 
-import { Test } from "src/utils";
+import { BaseTest, Test } from "src/utils";
 import { execTest, prepareTest } from "src/Tester";
 import {
     getTestQuery,
@@ -18,12 +18,13 @@ import {
     reorderStepsQuery,
     getLastStepIdQuery,
     updateOrCreateStepQuery,
+    getLoginTest,
 } from "src/Queries";
 
 export class Tester {
     id!: number;
 
-    loginTest?: Test;
+    loginTest!: Test | null;
 
     threshold!: number;
 
@@ -50,12 +51,17 @@ export class Tester {
         getTesterQuery().then(tester => {
             if (!tester) return;
 
+            getLoginTest(tester.id).then(loginTest => {
+                this.loginTest = loginTest;
+            });
+
             this.id = tester.id;
             this.appUrl = tester.appUrl;
             this.threshold = tester.threshold;
             this.imagesFolder = tester.imagesFolder;
 
             fs.mkdir(`${this.basePath}/${this.imagesFolder}`, () => {});
+
         });
     }
 
@@ -67,7 +73,7 @@ export class Tester {
         return await getTestQuery(this.id, testName);
     }
 
-    async createTest(test: Test) {
+    async createTest(test: BaseTest) {
         await createTestQuery(this.id, test)
     }
     
@@ -167,7 +173,6 @@ export class Tester {
                 }
             );
         } catch(error: any) {
-            console.error(error);
             this.error = error;
         }
 
@@ -202,14 +207,6 @@ export class Tester {
         this.testsRestarted = false;
 
         console.log('done');
-    }
-
-    async login(): Promise<Test | undefined> {
-        if (!this.loginTest) return undefined;
-        
-        await execTest(this.loginTest, this);
-
-        return this.loginTest;
     }
 
     async compareScreenshots(firstImagePath: string, secondImagePath: string): Promise<{numPixelDiff: number, imgBuffer: Buffer}> {

@@ -40,22 +40,6 @@ export async function execTest(test: Test, tester: Tester) {
         });
     }
 
-    if (test.needsLogin && !tester.isLoggedIn) {
-        console.log('This test requires login');
-
-        const loginTest = await tester.login();
-
-        if (loginTest && hasError(loginTest)) {
-            test.done = true;
-            test.pending = false;
-            test.error = `Error while trying to login, test aborted (${loginTest.error})`;
-
-            return;
-        }
-
-        tester.isLoggedIn = true;
-    }
-
     const stepResult = await runSteps(test.steps, tester);
 
     // Skip this test in case of error
