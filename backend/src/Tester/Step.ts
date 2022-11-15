@@ -1,7 +1,8 @@
 import { Prisma, Step } from "@prisma/client";
 
 import { Tester } from "./Tester";
-import { LISTENERS_ACTIONS, LISTENER_WAITER_ACTION } from "src/utils";
+import { execTest } from "./Test";
+import { ACTIONS_TO_FUNCTIONS } from "src/utils";
 
 export async function runSteps(steps: Step[], tester: Tester) {
     const result: { success: boolean, error: string | null } = {
@@ -13,13 +14,8 @@ export async function runSteps(steps: Step[], tester: Tester) {
         console.log(`Making step ${step.action} with args ${JSON.stringify(step.args)}`);
 
         try {
-            const isListener = await checkAndAddListener(step, tester);
-            const isListenerWaiter = await checkAndWaitForListener(step, tester);
-            if (!isListenerWaiter && !isListener) {
-                await firePageMethod(step, tester);
-            }
+            await ACTIONS_TO_FUNCTIONS[step.action]?.(step, tester);
         } catch(err) {
-            console.error(err);
             result.error =
                 `Error while making step ${step.action} with args ${JSON.stringify(step.args)}: ${err}`;
 
@@ -32,35 +28,36 @@ export async function runSteps(steps: Step[], tester: Tester) {
     return result;
 }
 
-async function checkAndWaitForListener(step: Step, tester: Tester) {
-    const isListenerWaiter = step.action === LISTENER_WAITER_ACTION;
+export async function login(step: Step, tester: Tester) {
+    if (!tester.loginTest) return undefined;
 
-    if (isListenerWaiter) {
-        const args = step.args as Prisma.JsonArray;
-        const argObj = (args[0] as { id: number }).hasOwnProperty('id') && args[0] as { id: number };
+    if (!tester.isLoggedIn) return tester.loginTest;
 
-        if (argObj) {
-                await tester.listenersOn[argObj.id];
-        } else {
-            throw Error(`Step: ${step.action} is missing arg: { id: number }`);
-        }
-    }
+    await execTest(tester.loginTest, tester);
 
-    return isListenerWaiter;
+    return tester.loginTest;
 }
 
-async function checkAndAddListener(step: Step, tester: Tester) {
-    const isListener = LISTENERS_ACTIONS.includes(step.action);
-    if (isListener) {
-        // Next line has been ignored because there were no way of letting TS accept it.
-        // @ts-ignore
-        tester.listenersOn[step.id] = tester.currentPage[step.action](...step.args);
-    }
+export async function waitListener(step: Step, tester: Tester) {
+    const args = step.args as Prisma.JsonArray;
+    const argObj = (args[0] as { id: number }).hasOwnProperty('id') && args[0] as { id: number };
 
-    return isListener;
+    if (argObj) {
+            await tester.listenersOn[argObj.id];
+    } else {
+        throw Error(`Step: ${step.action} is missing arg: { id: number }`);
+    }
 }
 
-async function firePageMethod(step: Step, tester: Tester) {
+export async function addListener(step: Step, tester: Tester) {
+    // Next line has been ignored because there were no way of letting TS accept it.
+    // @ts-ignore
+    tester.listenersOn[step.id] = tester.currentPage[step.action](...step.args);
+}
+
+export async function firePageMethod(step: Step, tester: Tester) {
+    if (!tester.currentPage.hasOwnProperty(step.action)) return;
+    
     // (TLDR; same as above) Next line has been ignored because there were no way of letting TS accept it.
     // @ts-ignore
     await tester.currentPage[step.action](...step.args);
