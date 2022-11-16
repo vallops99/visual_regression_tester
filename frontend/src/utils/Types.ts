@@ -72,6 +72,12 @@ export type SetTestsParam = {
     accept: boolean;
 };
 
+export type ModalType = {
+    type: ColorType;
+    title: string;
+    body?: string;
+}
+
 export type ColorType = "default" | "success" | "error";
 
 export type Theme = typeof LIGHT_THEME | typeof DARK_THEME;
