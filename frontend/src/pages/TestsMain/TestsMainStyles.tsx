@@ -94,3 +94,24 @@ export const Cross = styled.span`
     font-weight: bold;
     color: white;
 `;
+
+export const ErrorTestDetailContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+
+    color: var(--text-color);
+`;
+
+export const ErrorTestDetail = styled.div`
+    width: fit-content;
+
+    padding: 1rem;
+    margin: 1rem;
+
+    border: 2px solid var(--error);
+
+    font-weight: bold;
+`;

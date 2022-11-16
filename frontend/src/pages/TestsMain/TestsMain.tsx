@@ -19,15 +19,17 @@ import {
     CreateTest,
     UtilsContainer,
     TestsContainer,
+    ErrorTestDetail,
     DividerContainer,
     TestsMainContainer,
     CreateTestContainer,
+    ErrorTestDetailContainer,
 } from './TestsMainStyles';
 
 export function TestsMain() {
     const [waitForNotification, setWaitForNotification] = useState(false);
     
-    const { data: testsObject = { tests: [], areInvalid: true }, isFetching } = useGetTestsQuery();
+    const { data: testsObject = { tests: [], areInvalid: true }, isFetching, isError } = useGetTestsQuery();
 
     const [setTests] = useSetTestsMutation();
     const [launchTests] = useLaunchTestsMutation();
@@ -66,14 +68,20 @@ export function TestsMain() {
             <Tests>
                 {isFetching && <Spinner variant="viewport" />}
                 <TestsContainer>
-                    {testsObject.tests.map(test => (
-                        <TestComponent
-                            test={test}
-                            key={test.name}
-                            onClickSetTests={onClickSetTests}
-                            waitForNotification={waitForNotification}
-                        />
-                    ))}
+                    {isError ?
+                        <ErrorTestDetailContainer>
+                            <ErrorTestDetail>Something wrong happened, can not load the tests</ErrorTestDetail>
+                        </ErrorTestDetailContainer>
+                    :
+                        testsObject.tests.map(test => (
+                            <TestComponent
+                                test={test}
+                                key={test.name}
+                                onClickSetTests={onClickSetTests}
+                                waitForNotification={waitForNotification}
+                            />
+                        ))
+                    }
                 </TestsContainer>
                 <Divider />
                 <UtilsContainer>
