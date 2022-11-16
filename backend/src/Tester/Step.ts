@@ -56,8 +56,11 @@ export async function addListener(step: Step, tester: Tester) {
 }
 
 export async function firePageMethod(step: Step, tester: Tester) {
-    if (!tester.currentPage.hasOwnProperty(step.action)) return;
-    
+    // If step.action is not a method of Puppeteer's Page class abort
+    if (typeof tester.currentPage[step.action as keyof typeof tester.currentPage] !== 'function') {
+        throw Error(`Can not execute ${step.action} because it is not a method of Puppeteer's Page class`);
+    }
+
     // (TLDR; same as above) Next line has been ignored because there were no way of letting TS accept it.
     // @ts-ignore
     await tester.currentPage[step.action](...step.args);

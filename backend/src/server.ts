@@ -110,7 +110,8 @@ app.post("/create-test", async function(request, response) {
 	}
 });
 
-app.post("/edit-test", async function(request, response) {
+// [TODO] add test edit to frontend
+app.put("/edit-test", async function(request, response) {
 	try {
 		await tester.editTests(request.body);
 
