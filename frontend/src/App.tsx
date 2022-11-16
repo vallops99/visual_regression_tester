@@ -6,6 +6,7 @@ import { ThemeWrapper } from "./AppStyles";
 import {
     StepsContextProvider,
     ThemeContextProvider,
+    ModalContextProvider,
     LastStepIdContextProvider,
 } from "./utils";
 
@@ -17,11 +18,13 @@ function App() {
             <ThemeContextProvider>
                 <StepsContextProvider>
                     <LastStepIdContextProvider>
-                        <ThemeWrapper>
-                            <BrowserRouter>
-                                <Navbar />
-                            </BrowserRouter>
-                        </ThemeWrapper>
+                        <ModalContextProvider>
+                            <ThemeWrapper>
+                                <BrowserRouter>
+                                    <Navbar />
+                                </BrowserRouter>
+                            </ThemeWrapper>
+                        </ModalContextProvider>
                     </LastStepIdContextProvider>
                 </StepsContextProvider>
             </ThemeContextProvider>

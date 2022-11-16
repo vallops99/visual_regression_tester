@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useSteps } from "../../hooks";
+import { useModal, useSteps } from "../../hooks";
 import {
     Steps,
     Label,
@@ -20,6 +20,7 @@ import {
 
 export function TestCreate() {
     const { steps, setSteps } = useSteps();
+    const { modal, setModal } = useModal();
 
     const [name, setName] = useState("");
     const [isLogin, setIsLogin] = useState(false);
@@ -41,11 +42,17 @@ export function TestCreate() {
             name,
             steps,
             isLogin,
-        }).then(() => {
+        }).unwrap().then(() => {
             navigate(`/${name}`);
-        });
+        }).catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during test creation",
+                body: `The server has not been able to create the test, error is the following: ${JSON.stringify(err)}`,
+            });
+        });;
         event.preventDefault();
-    }, [name, isLogin, steps, createTest, navigate]);
+    }, [name, isLogin, steps, createTest, navigate, setModal]);
 
     useEffect(() => {
         setSteps([]);
@@ -53,6 +60,7 @@ export function TestCreate() {
 
     return (
         <TestCreateContainer>
+            {modal}
             <form onSubmit={(event) => { onSubmitCreate(event) }}>
                 <TestCreateSplitter>
                     <InputsContainer>

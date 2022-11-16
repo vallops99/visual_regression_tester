@@ -2,7 +2,7 @@ import { MdEdit } from "react-icons/md";
 import { FiTrash2 } from "react-icons/fi";
 import { useCallback, useState } from "react";
 
-import { useLastStepId } from "../../hooks";
+import { useLastStepId, useModal } from "../../hooks";
 import { StepInputFields } from "./StepInputFields";
 import { Actions, Arg, Step, ACTIONS_INPUTS_MAP } from "../../utils";
 import {
@@ -29,6 +29,7 @@ interface Props {
 }
 
 export function StepComponent({ step, index, testName, onClickCloseEdit, updateLocalSteps }: Props) {
+    const { setModal } = useModal();
     const { lastId, setLastId } = useLastStepId();
 
     const [isEditing, setIsEditing] = useState(step.isNew);
@@ -51,7 +52,15 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
         }
     }, [index, step, lastId, setLastId, onClickCloseEdit]);
 
-    const onClickDeleteStep = useCallback(() => deleteStep({ id: step.id}), [step.id, deleteStep]);
+    const onClickDeleteStep = useCallback(() => {
+        deleteStep({ id: step.id}).unwrap().catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during step delete",
+                body: `The server has not been able to provide notification info, error is the following: ${JSON.stringify(err)}`,
+            });
+        });
+    }, [step.id, deleteStep, setModal]);
 
     const onChangeAction = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
         const action = event.target.value as Actions;
@@ -99,32 +108,41 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
         }
     }, [argsState, actionState, step, updateLocalSteps]);
 
-    const onSubmitForm = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-        if (testName) {
-            updateOrCreateStep({
-                ...step,
+    const onSubmitForm = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+        let isSuccess = true;
+        const localStepObj = {
+            ...step,
 
-                testId: testName,
-                isNew: true,
-                args: argsState,
-                action: actionState
-            });
+            isNew: false,
+            action: actionState,
+            args: argsState
+        };
+
+        if (testName) {
+            try {
+                await updateOrCreateStep({
+                    ...step,
+
+                    testId: testName,
+                    isNew: true,
+                    args: argsState,
+                    action: actionState
+                });
+            } catch(err) {
+                isSuccess = false;
+                setModal({
+                    type: "error",
+                    title: "Error during step creation/modification",
+                    body: `The server has not been able to create/edit the step, error is the following: ${JSON.stringify(err)}`,
+                });
+            }
         }
 
-        setIsEditing(false);
-        updateLocalSteps(
-            index,
-            {
-                ...step,
-
-                isNew: false,
-                action: actionState,
-                args: argsState
-            }
-        )
+        setIsEditing(isSuccess);
+        isSuccess && updateLocalSteps(index, localStepObj);
 
         event.preventDefault();
-    }, [actionState, argsState, step, testName, index, updateLocalSteps, updateOrCreateStep]);
+    }, [actionState, argsState, step, testName, index, updateLocalSteps, updateOrCreateStep, setModal]);
 
     let inputs = <StepInputFields
         stepId={step.id}

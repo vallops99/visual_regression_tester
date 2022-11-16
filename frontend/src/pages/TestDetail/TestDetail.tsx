@@ -2,7 +2,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useSteps } from "../../hooks";
+import { useModal, useSteps } from "../../hooks";
 import {
     Steps,
     Button,
@@ -30,6 +30,7 @@ export function TestDetail() {
     const params = useParams();
     const navigate = useNavigate();
     const { setSteps } = useSteps();
+    const { modal, setModal } = useModal();
 
     const { data: test, isFetching, isError } = useGetTestQuery(params.testName || '');
 
@@ -37,14 +38,26 @@ export function TestDetail() {
     const [deleteTest] = useDeleteTestMutation();
 
     const onClickDeleteTest = useCallback(() => {
-        deleteTest({ name: test?.name || "" });
-        navigate("/");
-    }, [test?.name, deleteTest, navigate]);
+        deleteTest({ name: test?.name || "" }).unwrap().then(() => {
+            navigate("/");
+        }).catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during notification check",
+                body: `The server has not been able to provide notification info, error is the following: ${JSON.stringify(err)}`,
+            });
+        });
+    }, [test?.name, deleteTest, navigate, setModal]);
 
-    const onClickSetTests = useCallback(
-        (accept : boolean) => setTests({ tests: [test!], accept }),
-        [setTests, test]
-    );
+    const onClickSetTests = useCallback((accept : boolean) => {
+        setTests({ tests: [test!], accept }).unwrap().catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during test update",
+                body: `The server has not been able to udpate the test, error is the following: ${JSON.stringify(err)}`,
+            });
+        });
+    }, [test, setTests, setModal]);
 
     useEffect(() => {
         setSteps(test?.steps || []);
@@ -70,6 +83,7 @@ export function TestDetail() {
 
     return (
         <TestDetailContainer>
+            {modal}
             <TestSplitter>
                 <TestWrapper>
                     <DeleteTestContainer>

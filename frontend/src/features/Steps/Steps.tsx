@@ -7,7 +7,7 @@ import {
     DragDropContext,
 } from "react-beautiful-dnd";
 
-import { useLastStepId, useSteps } from "../../hooks";
+import { useLastStepId, useModal, useSteps } from "../../hooks";
 import { Button, StepComponent, useReorderStepsMutation } from "..";
 import { ACTIONS_INPUTS_MAP, Step } from "../../utils";
 import {
@@ -26,6 +26,7 @@ interface Props {
 
 export function Steps({ testName }: Props) {
     const { steps, setSteps } = useSteps();
+    const { setModal } = useModal();
     const { lastId, setLastId } = useLastStepId();
 
     const [reorderSteps] = useReorderStepsMutation();
@@ -77,11 +78,19 @@ export function Steps({ testName }: Props) {
         // If we have a legit test (a test synched with the db) we can sync the
         // reorder on the db
         if (testName) {
-            reorderSteps(reorderedSteps.map((step, index) => ({ ...step, order: index })));
+            reorderSteps(reorderedSteps.map(
+                (step, index) => ({ ...step, order: index })
+            )).unwrap().catch(err => {
+                setModal({
+                    type: "error",
+                    title: "Error during steps reorder",
+                    body: `The server has not been able to reorder the steps, error is the following: ${JSON.stringify(err)}`,
+                });
+            });
         }
 
         setSteps([...reorderedSteps, ...newSteps]);
-    }, [steps, testName, setSteps, reorderSteps]);
+    }, [steps, testName, setSteps, reorderSteps, setModal]);
 
     const updateLocalSteps = useCallback((index: number, step: Step) => {
         const stepsCopy = [...steps];

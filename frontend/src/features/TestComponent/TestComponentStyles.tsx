@@ -17,6 +17,8 @@ export const TestBox = styled.div`
     border-radius: .5rem;
 
     box-shadow: 0px 2px 10px 0px rgb(0 0 0 / 30%);
+
+    overflow: hidden;
 `;
 
 export const TestBodyContainer = styled.div`

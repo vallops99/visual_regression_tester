@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
 
+import { ColorType } from "../../utils";
 import { ParagraphStyled } from "./ParagraphStyles";
 
 interface Props {
-    variant?: "success" | "error";
+    variant?: ColorType;
     children: ReactNode;
     className?: string
 }

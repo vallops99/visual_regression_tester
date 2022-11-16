@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BsPlusLg } from "react-icons/bs";
 
 import { Test } from "../../utils";
+import { useModal } from "../../hooks";
 import {
     Button,
     Spinner,
@@ -27,6 +28,8 @@ import {
 } from './TestsMainStyles';
 
 export function TestsMain() {
+    const { modal, setModal } = useModal();
+
     const [waitForNotification, setWaitForNotification] = useState(false);
     
     const { data: testsObject = { tests: [], areInvalid: true }, isFetching, isError } = useGetTestsQuery();
@@ -42,29 +45,48 @@ export function TestsMain() {
             if (response.testsToReload.length) setWaitForNotification(false);
 
             if (response.areTestsDone) clearInterval(intervalId);
+        }).catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during notification check",
+                body: `The server has not been able to provide notification info, error is the following: ${JSON.stringify(err)}`,
+            });
         });
-    }, [getNotifications]);
+    }, [getNotifications, setModal]);
 
     const onClickLaunchTests = useCallback(() => {
         setWaitForNotification(true);
 
-        launchTests().then(() => {
+        launchTests().unwrap().then(() => {
             const intervalFunction = () : void => checkNotifications(intervalId);
             const intervalId = setInterval(intervalFunction, 1000);
+        }).catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during test launch",
+                body: `The server has not been able to launch the tests, error is the following: ${JSON.stringify(err)}`,
+            });
         });
-    }, [checkNotifications, launchTests, setWaitForNotification]);
+    }, [checkNotifications, launchTests, setWaitForNotification, setModal]);
 
     const onClickSetTests = useCallback((tests: Test[], accept : boolean) => {
         setTests({
             tests,
             accept
+        }).unwrap().catch(err => {
+            setModal({
+                type: "error",
+                title: "Error during test update",
+                body: `The server has not been able to update the test(s), error is the following: ${JSON.stringify(err)}`,
+            });
         });
-    }, [setTests]);
+    }, [setTests, setModal]);
 
     const onClickCreateTest = useCallback(() => navigate('/create'), [navigate]);
 
     return (
         <TestsMainContainer>
+            {modal}
             <Tests>
                 {isFetching && <Spinner variant="viewport" />}
                 <TestsContainer>
