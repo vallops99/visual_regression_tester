@@ -97,7 +97,7 @@ export const Cross = styled.span`
     color: white;
 `;
 
-export const ErrorTestDetailContainer = styled.div`
+export const ErrorTestsMainContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -107,7 +107,7 @@ export const ErrorTestDetailContainer = styled.div`
     color: var(--text-color);
 `;
 
-export const ErrorTestDetail = styled.div`
+export const ErrorTestsMain = styled.div`
     width: fit-content;
 
     padding: 1rem;

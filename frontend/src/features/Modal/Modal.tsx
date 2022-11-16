@@ -25,7 +25,7 @@ export function Modal({ type, title, body, setModal }: Props) {
     }, [setModal]);
 
     return (
-        <ModalContainer type={type}>
+        <ModalContainer type={type}  data-testid="modalError">
             <ModalInnerContainer>
                 <ModalTitle>{title}</ModalTitle>
                 <ModalBody>{body}</ModalBody>

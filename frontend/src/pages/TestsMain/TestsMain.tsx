@@ -20,11 +20,11 @@ import {
     CreateTest,
     UtilsContainer,
     TestsContainer,
-    ErrorTestDetail,
+    ErrorTestsMain,
     DividerContainer,
     TestsMainContainer,
     CreateTestContainer,
-    ErrorTestDetailContainer,
+    ErrorTestsMainContainer,
 } from './TestsMainStyles';
 
 export function TestsMain() {
@@ -91,9 +91,9 @@ export function TestsMain() {
                 {isFetching && <Spinner variant="viewport" />}
                 <TestsContainer>
                     {isError ?
-                        <ErrorTestDetailContainer>
-                            <ErrorTestDetail>Something wrong happened, can not load the tests</ErrorTestDetail>
-                        </ErrorTestDetailContainer>
+                        <ErrorTestsMainContainer>
+                            <ErrorTestsMain data-testid="errorTestsMain">Something wrong happened, can not load the tests</ErrorTestsMain>
+                        </ErrorTestsMainContainer>
                     :
                         testsObject.tests.map(test => (
                             <TestComponent

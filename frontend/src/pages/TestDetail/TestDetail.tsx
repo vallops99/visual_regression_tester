@@ -76,7 +76,7 @@ export function TestDetail() {
     if (isError || !test) {
         return (
             <ErrorTestDetailContainer>
-                <ErrorTestDetail>Something wrong happened, can't load the test requested</ErrorTestDetail>
+                <ErrorTestDetail data-testid="errorTestDetail">Something wrong happened, can't load the test requested</ErrorTestDetail>
             </ErrorTestDetailContainer>
         );
     }
