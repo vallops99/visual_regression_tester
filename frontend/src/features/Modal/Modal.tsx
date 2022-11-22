@@ -25,10 +25,10 @@ export function Modal({ type, title, body, setModal }: Props) {
     }, [setModal]);
 
     return (
-        <ModalContainer type={type}  data-testid="modalError">
+        <ModalContainer type={type}>
             <ModalInnerContainer>
                 <ModalTitle>{title}</ModalTitle>
-                <ModalBody>{body}</ModalBody>
+                <ModalBody data-testid="modalError">{body}</ModalBody>
                 <ModalCloseButton>
                     <Button
                         type="button"

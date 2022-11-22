@@ -24,7 +24,7 @@ export function TestComponent({ test, onClickSetTests, waitForNotification } : P
             {(waitForNotification || test.pending) && <Spinner />}
 
             <TestBodyContainer>
-                <TestTitle>{test?.name}</TestTitle>
+                <TestTitle data-testid="testTitle">{test?.name}</TestTitle>
                 <TestImageContainer>
                     <TestImage
                         src={test?.hasDiff ? test.diffPath : test?.imagePath}
@@ -34,27 +34,32 @@ export function TestComponent({ test, onClickSetTests, waitForNotification } : P
             </TestBodyContainer>
             <Divider orientation="horizontal" />
             <TestActions>
-                {test.error ? <Paragraph variant="error">Test error, Show in depth to know more</Paragraph> :
+                {test.error ? <Paragraph dataTestId="singleTestError" variant="error">Test error, Show in depth to know more</Paragraph> :
                     <>
-                        {!test?.hasDiff && <Paragraph>Test has found no differences</Paragraph>}
-                        {test?.hasDiff && <>
-                            <TestButtonConfirmations>
-                                <Button
-                                    colorType="success"
-                                    variant="outlined"
-                                    onClick={() => onClickSetTests([test], true)}
-                                >
-                                    Accept changes
-                                </Button>
-                                <Button
-                                    colorType="error"
-                                    variant="outlined"
-                                    onClick={() => onClickSetTests([test], false)}
-                                >
-                                    Reject changes
-                                </Button>
-                            </TestButtonConfirmations>
-                        </>}
+                        {test?.hasDiff ? 
+                            <>
+                                <TestButtonConfirmations>
+                                    <Button
+                                        colorType="success"
+                                        variant="outlined"
+                                        onClick={() => onClickSetTests([test], true)}
+                                        dataTestId="acceptOneChange"
+                                    >
+                                        Accept changes
+                                    </Button>
+                                    <Button
+                                        colorType="error"
+                                        variant="outlined"
+                                        onClick={() => onClickSetTests([test], false)}
+                                        dataTestId="refuseOneChange"
+                                    >
+                                        Reject changes
+                                    </Button>
+                                </TestButtonConfirmations>
+                            </>
+                        :
+                            <Paragraph dataTestId="noDiffParagraph">Test has found no differences</Paragraph>
+                        }
                     </>
                 }
                 <ShowLink

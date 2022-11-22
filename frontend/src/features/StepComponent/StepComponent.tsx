@@ -156,7 +156,7 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
 
     if (testName) {
         inputs = (
-            <StepComponentForm onSubmit={(event) => onSubmitForm(event)}>
+            <StepComponentForm onSubmit={(event) => onSubmitForm(event)} data-testid="StepComponentForm">
                 {inputs}
                 <Button type="submit">Submit</Button>
             </StepComponentForm>
@@ -181,10 +181,25 @@ export function StepComponent({ step, index, testName, onClickCloseEdit, updateL
                 </StepInfo>
             )}
             <EditIconContainer>
-                <Button type="button" variant="icon" onClick={onClickEdit}><MdEdit /></Button>
+                <Button
+                    type="button"
+                    variant="icon"
+                    onClick={onClickEdit}
+                    dataTestId="StepComponentEditStep"
+                >
+                    <MdEdit />
+                </Button>
             </EditIconContainer>
             <DeleteIconContainer>
-                <Button type="button" variant="icon" colorType="error" onClick={() => onClickDeleteStep()}><FiTrash2 /></Button>
+                <Button
+                    type="button"
+                    variant="icon"
+                    colorType="error"
+                    onClick={() => onClickDeleteStep()}
+                    dataTestId="StepComponentDeleteStep"
+                >
+                    <FiTrash2 />
+                </Button>
             </DeleteIconContainer>
         </>
     );

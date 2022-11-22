@@ -7,10 +7,12 @@ interface Props {
     placeholder?: string;
     type?: React.HTMLInputTypeAttribute;
     value?: string | number | readonly string[];
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+
+    dataTestId?: string;
 }
 
-export function Input({ id, name, placeholder, value, required = false, type = "text", onChange = () => {} }: Props) {
+export function Input({ id, name, placeholder, value, required = false, type = "text", onChange = () => {}, dataTestId }: Props) {
     return <InputStyled
         id={id}
         name={name}
@@ -19,5 +21,7 @@ export function Input({ id, name, placeholder, value, required = false, type = "
         value={value}
         onChange={(event) => onChange(event)}
         required={required}
+
+        data-testid={dataTestId}
     />
 }

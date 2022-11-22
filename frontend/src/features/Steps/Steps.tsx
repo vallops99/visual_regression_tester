@@ -126,7 +126,7 @@ export function Steps({ testName }: Props) {
                                                 style={provided.draggableProps.style}
                                             >
                                                 <DraggableWrapper>
-                                                    <StepContainer>
+                                                    <StepContainer data-testid="StepsStepContainer">
                                                         <StepWrapper>
                                                             <StepComponent
                                                                 step={step}
@@ -154,7 +154,7 @@ export function Steps({ testName }: Props) {
                     </Droppable>
                 </DragDropContext>
             </StepsList>
-            <Button type="button" onClick={onClickAddStep}>
+            <Button type="button" onClick={onClickAddStep} dataTestId="StepsAddStep">
                 Add Step
             </Button>
         </StepsContainer>

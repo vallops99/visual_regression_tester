@@ -107,14 +107,31 @@ export function TestsMain() {
                 </TestsContainer>
                 <Divider />
                 <UtilsContainer>
-                    <Button onClick={onClickLaunchTests}>Launch tests</Button>
+                    <Button
+                        onClick={onClickLaunchTests}
+                        dataTestId="launchTests"
+                    >
+                        Launch tests
+                    </Button>
                     {testsObject.areInvalid && 
                         <>
                             <DividerContainer>
                                 <Divider orientation="horizontal" />
                             </DividerContainer>
-                            <Button colorType="success" onClick={() => onClickSetTests(testsObject.tests, true)}>Accept all</Button>
-                            <Button colorType="error" onClick={() => onClickSetTests(testsObject.tests, false)}>Reject All</Button>
+                            <Button
+                                colorType="success"
+                                onClick={() => onClickSetTests(testsObject.tests, true)}
+                                dataTestId="acceptAllChanges"
+                            >
+                                Accept all
+                            </Button>
+                            <Button
+                                colorType="error"
+                                onClick={() => onClickSetTests(testsObject.tests, false)}
+                                dataTestId="refuseAllChanges"
+                            >
+                                Reject All
+                            </Button>
                         </>
                     }
                 </UtilsContainer>

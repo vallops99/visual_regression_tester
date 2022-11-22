@@ -27,12 +27,12 @@ import {
 } from './TestDetailStyles';
 
 export function TestDetail() {
-    const params = useParams();
+    const { testName } = useParams();
     const navigate = useNavigate();
     const { setSteps } = useSteps();
     const { modal, setModal } = useModal();
 
-    const { data: test, isFetching, isError } = useGetTestQuery(params.testName || '');
+    const { data: test, isFetching, isError } = useGetTestQuery(testName || '');
 
     const [setTests] = useSetTestsMutation();
     const [deleteTest] = useDeleteTestMutation();
@@ -92,11 +92,12 @@ export function TestDetail() {
                             variant="icon"
                             colorType="error"
                             onClick={() => onClickDeleteTest()}
+                            dataTestId="TestDetailDeleteTest"
                         >
                             <FiTrash2 />
                         </Button>
                     </DeleteTestContainer>
-                    <TestDetailHeader>
+                    <TestDetailHeader data-testid="testDetailHeader">
                         {test.name}
                     </TestDetailHeader>
 
@@ -108,7 +109,7 @@ export function TestDetail() {
                     <>
                         {!test.done && (
                             <ErrorTestDetailContainer>
-                                <ErrorTestDetail>
+                                <ErrorTestDetail data-testid="TestDetailNotRanYet">
                                     Test has not ran yet.
                                 </ErrorTestDetail>
                             </ErrorTestDetailContainer>
@@ -116,7 +117,7 @@ export function TestDetail() {
 
                         {!test.hasDiff && test.done && (
                             <ImageDetail>
-                                <ImageDetailDescription>
+                                <ImageDetailDescription data-testid="TestDetailNoDiffHeader">
                                     Saved image
                                 </ImageDetailDescription>
                                 <ImgStyled src={test.imagePath}></ImgStyled>
@@ -126,7 +127,7 @@ export function TestDetail() {
                         {test.hasDiff && (
                             <>
                                 <ImageDetail>
-                                    <ImageDetailDescription>
+                                    <ImageDetailDescription data-testid="TestDetailNewImageHeader">
                                         New image
                                     </ImageDetailDescription>
                                     <ImgButton
@@ -134,6 +135,7 @@ export function TestDetail() {
                                         variant="outlined"
                                         src={test.lastImagePath}
                                         alt={`${test.name} new image`}
+                                        dataTestId="TestDetailAcceptNew"
                                         onClick={() => onClickSetTests(true)}
                                     >
                                             Accept NEW image

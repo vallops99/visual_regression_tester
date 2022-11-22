@@ -1,0 +1,52 @@
+{
+    "name": "CondaRepo",
+    "testerId": 1,
+    "orderNumber": 30,
+    "error": null,
+    "diffPath": null,
+    "imagePath": "./images/mock_image.png",
+    "lastImagePath": null,
+    "done": true,
+    "hasDiff": false,
+    "isLogin": false,
+    "pending": false,
+    "notified": true,
+    "createdAt": "2022-11-10T10:49:11.964Z",
+    "steps": [
+        {
+            "id": 1,
+            "testId": "CondaRepo",
+            "action": "waitForNavigation",
+            "args": [
+                {
+                    "waitUntil": "networkidle0"
+                }
+            ],
+            "order": 0,
+            "createdAt": "2022-11-10T10:49:11.974Z"
+        },
+        {
+            "id": 2,
+            "testId": "CondaRepo",
+            "action": "click",
+            "args": [
+                ".repo[title=\"Conda-autoactivate-env\"]",
+                {}
+            ],
+            "order": 1,
+            "createdAt": "2022-11-10T10:49:11.974Z"
+        },
+        {
+            "id": 3,
+            "testId": "CondaRepo",
+            "action": "waitListener",
+            "args": [
+                {
+                    "id": "1"
+                }
+            ],
+            "order": 2,
+            "createdAt": "2022-11-10T14:03:33.039Z"
+        }
+    ]
+}

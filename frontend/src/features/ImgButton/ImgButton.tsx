@@ -6,12 +6,19 @@ import {
     ImgButtonContainer,
 } from "./ImgButtonStyles";
 
-export function ImgButton({ className, colorType, variant, src, alt, onClick, children}: ButtonProps & ImgProps) {
+export function ImgButton({ className, colorType, variant, src, alt, onClick, dataTestId, children}: ButtonProps & ImgProps) {
     return (
         <ImgButtonContainer className={className} color={colorType}>
             <ImgStyled src={src} alt={alt} />
             <ButtonContainer>
-                <Button colorType={colorType} variant={variant} onClick={onClick}>{children}</Button>
+                <Button
+                    colorType={colorType}
+                    variant={variant}
+                    onClick={onClick}
+                    dataTestId={dataTestId}
+                >
+                    {children}
+                </Button>
             </ButtonContainer>
         </ImgButtonContainer>
     );

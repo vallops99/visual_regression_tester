@@ -10,8 +10,18 @@ export interface ButtonProps {
     variant?: "outlined" | "icon";
     colorType?: ColorType;
     onClick?: () => void;
+
+    dataTestId?: string;
 };
 
-export function Button({ colorType = "default", type, variant, onClick, children }: ButtonProps) {
-    return <ButtonStyled type={type} colorType={colorType} variant={variant} onClick={onClick}>{children}</ButtonStyled>;
+export function Button({ colorType = "default", type, variant, onClick, children, dataTestId }: ButtonProps) {
+    return <ButtonStyled
+        type={type}
+        colorType={colorType}
+        variant={variant}
+        onClick={onClick}
+        data-testid={dataTestId}
+    >
+        {children}
+    </ButtonStyled>;
 }

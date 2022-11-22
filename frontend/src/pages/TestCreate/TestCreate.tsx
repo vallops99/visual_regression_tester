@@ -61,7 +61,7 @@ export function TestCreate() {
     return (
         <TestCreateContainer>
             {modal}
-            <form onSubmit={(event) => { onSubmitCreate(event) }}>
+            <form onSubmit={(event) => { onSubmitCreate(event) }} data-testid="testCreateForm">
                 <TestCreateSplitter>
                     <InputsContainer>
                         <InputContainer>
@@ -74,6 +74,7 @@ export function TestCreate() {
                                 value={name}
                                 onChange={onChangeName}
                                 required={true}
+                                dataTestId="testCreateTextInput"
                             />
                         </InputContainer>
                         <InputContainer>
@@ -90,7 +91,7 @@ export function TestCreate() {
                     </InputsContainer>
                     <Divider />
                     <SubmitContainer>
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit" dataTestId="testCreateSubmit">Submit</Button>
                     </SubmitContainer>
                 </TestCreateSplitter>
             </form>
