@@ -31,13 +31,19 @@ app.post("/launch-tests", function(request, response) {
 // });
 
 app.get("/get-tests", async function(request, response) {
-    const tests = await tester.getTests();
-	const areInvalid = tests.some(test => test.hasDiff);
+	try {
+		const tests = await tester.getTests();
+		const areInvalid = tests.some(test => test.hasDiff);
 
-	return response.send(JSON.stringify({
-        tests,
-        areInvalid
-    }));
+		return response.send(JSON.stringify({
+			tests,
+			areInvalid
+    	}));
+	} catch(err) {
+		return response.send(JSON.stringify({
+			error: err
+		}))
+	}
 });
 
 app.get("/get-test/:name", async function(request, response) {
